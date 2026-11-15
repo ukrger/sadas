@@ -21,16 +21,7 @@ public static class PrototypeBuilder {
   var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
   var grass=Mat("Grass",new Color(.27f,.38f,.12f));var wood=Mat("Wood",new Color(.25f,.17f,.10f));var metal=Mat("Steel",new Color(.22f,.26f,.23f),.7f);var foliage=Mat("Leaves",new Color(.20f,.34f,.09f));var concrete=Mat("Concrete",new Color(.45f,.44f,.37f));var fuel=Mat("Fuel",new Color(.55f,.24f,.08f),.4f);
   var trainObject=new GameObject("Train");var train=trainObject.AddComponent<TrainMotor>();
-  Box(trainObject.transform,"Floor",new Vector3(0,1,0),new Vector3(3,.3f,12),wood);
-  Box(trainObject.transform,"Roof",new Vector3(0,4,0),new Vector3(3.2f,.2f,12),metal);
-  // Side walls include an unobstructed right-side exit at the rear.
-  Box(trainObject.transform,"Left wall",new Vector3(-1.5f,2.5f,0),new Vector3(.12f,2.8f,12),metal);
-  Box(trainObject.transform,"Right wall",new Vector3(1.5f,2.5f,1.5f),new Vector3(.12f,2.8f,9),metal);
-  Box(trainObject.transform,"Rear wall",new Vector3(0,2.5f,-6),new Vector3(3,2.8f,.12f),metal);
-  Box(trainObject.transform,"Front wall",new Vector3(0,2.5f,6),new Vector3(3,2.8f,.12f),metal);
-  var cab=Box(trainObject.transform,"Cab control",new Vector3(0,1.6f,4.5f),new Vector3(1.8f,.8f,.6f),metal);
-  // Small steps support walking from ground or platform through the doorway.
-  for(int i=0;i<4;i++)Box(trainObject.transform,"Step",new Vector3(2.7f-i*.3f,.15f+i*.25f,-4.5f),new Vector3(.4f,.3f,2),metal);
+  var cab=RailcarSetup.Build(trainObject.transform,metal);
   var station=new GameObject("Station");
   Box(station.transform,"Platform",new Vector3(6,.35f,160),new Vector3(7,.7f,26),concrete);
   Box(station.transform,"Shelter roof",new Vector3(7,3.7f,164),new Vector3(5,.2f,8),wood);
@@ -42,7 +33,7 @@ public static class PrototypeBuilder {
   var cameraObject=new GameObject("Player Camera");cameraObject.tag="MainCamera";cameraObject.transform.SetParent(playerObject.transform,false);cameraObject.transform.localPosition=Vector3.up*1.65f;
   var cam=cameraObject.AddComponent<Camera>();cam.nearClipPlane=.05f;cam.farClipPlane=350;cam.fieldOfView=75;cameraObject.AddComponent<AudioListener>();
   cam.gameObject.AddComponent<UniversalAdditionalCameraData>().renderPostProcessing=true;player.view=cam;
-  var ui=playerObject.AddComponent<PrototypeUI>();ui.player=player;ui.train=train;ui.cab=cab.transform;
+  var ui=playerObject.AddComponent<PrototypeUI>();ui.player=player;ui.train=train;ui.cab=cab;
   var world=new GameObject("Route Streamer").AddComponent<RouteChunks>();world.train=train;world.grass=grass;world.wood=wood;world.leaves=foliage;world.steel=metal;
   var sun=new GameObject("Sun").AddComponent<Light>();sun.type=LightType.Directional;sun.shadows=LightShadows.Soft;RenderSettings.sun=sun;
   var cycle=sun.gameObject.AddComponent<SummerLighting>();cycle.sun=sun;
