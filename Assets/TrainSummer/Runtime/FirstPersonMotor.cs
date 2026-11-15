@@ -4,6 +4,7 @@ namespace TrainSummer {
 [RequireComponent(typeof(CharacterController))]
 [DefaultExecutionOrder(100)]
 public sealed class FirstPersonMotor:MonoBehaviour {
+ public PlayerVitals vitals;
  public Camera view; public TrainMotor train; public float walkSpeed=4,sensitivity=0.12f;
  CharacterController controller; Transform support; Vector3 supportPoint; Quaternion supportRotation;
  Vector3 inheritedVelocity; float pitch,vertical;
@@ -15,8 +16,10 @@ public sealed class FirstPersonMotor:MonoBehaviour {
   var k=Keyboard.current;var m=Mouse.current;if(k==null||m==null)return;
   float dt=Time.deltaTime;if(dt<=0)return;
   if(k.escapeKey.wasPressedThisFrame)Lock(!Locked);
+  if(vitals!=null && !vitals.Alive){train.PlayerAboard=false;if(k.rKey.wasPressedThisFrame){Respawn();vitals.ResetAfterRespawn();}return;}
   // Train and pooled world transforms move before this controller.
   Physics.SyncTransforms();
+  bool groundedBefore=controller.isGrounded;
   bool jump=Locked && controller.isGrounded && k.spaceKey.wasPressedThisFrame;
   Vector3 platformVelocity=Vector3.zero;
   bool hadSupport=support!=null;
@@ -40,7 +43,8 @@ public sealed class FirstPersonMotor:MonoBehaviour {
   Vector3 velocity=(transform.right*move.x+transform.forward*move.y)*walkSpeed+Vector3.up*vertical;
   // Attached players get platform displacement once. In flight, preserve launch velocity.
   if(support==null)velocity+=inheritedVelocity;
-  controller.Move(velocity*dt);
+  var flags=controller.Move(velocity*dt);
+  if(!groundedBefore && (flags&CollisionFlags.Below)!=0 && vertical< -10 && vitals!=null)vitals.ApplyDamage((-vertical-10)*8);
   support=null;
   if(vertical<=0 && Physics.Raycast(transform.position+Vector3.up*.12f,Vector3.down,out var hit,.35f,~(1<<gameObject.layer),QueryTriggerInteraction.Ignore)){
    var platform=hit.collider.GetComponentInParent<TrainMotor>();if(platform!=null)support=platform.transform;

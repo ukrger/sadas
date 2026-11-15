@@ -34,6 +34,13 @@ public static class ModelSetup {
   if(material==null){material=new Material(Shader.Find("Universal Render Pipeline/Lit"));AssetDatabase.CreateAsset(material,path);}
   Color color=new Color(.14f,.22f,.18f);float metallic=.5f;
   switch(key){
+   case "GearCanvas":color=new Color(.20f,.25f,.12f);metallic=0;break;
+   case "GearStrap":color=new Color(.10f,.12f,.075f);metallic=0;break;
+   case "GearSteel":color=new Color(.22f,.23f,.20f);metallic=.7f;break;
+   case "GearLeather":color=new Color(.24f,.13f,.055f);metallic=0;break;
+   case "GearMark":color=new Color(.77f,.71f,.50f);metallic=0;break;
+   case "AxeWood":color=new Color(.31f,.16f,.065f);metallic=0;break;
+   case "AxeEdge":color=new Color(.56f,.58f,.55f);metallic=.9f;break;
    case "PropWood":color=new Color(.30f,.19f,.09f);metallic=0;break;
    case "PropSteel":color=new Color(.13f,.15f,.14f);metallic=.75f;break;
    case "PropPaint":color=new Color(.26f,.32f,.16f);metallic=.2f;break;
