@@ -26,15 +26,18 @@ public static class PrototypeBuilder {
   var route=new GameObject("Route Path").AddComponent<RoutePath>();if(longRoute)route.forwardExtent=15600;route.Rebuild();
   var trainObject=new GameObject("Train");var train=trainObject.AddComponent<TrainMotor>();train.route=route;
   if(longRoute){train.stops=new float[]{2800,6000,9200,12400};train.startingFuel=75;}
+  var maintenance=trainObject.AddComponent<TrainMaintenance>();maintenance.train=train;train.maintenance=maintenance;
   var cab=RailcarSetup.Build(trainObject.transform,metal);
+  SurvivalPropsSetup.AddBench(train,metal);
   for(int i=0;i<train.stops.Length;i++)StationSetup.Build(route,train.stops[i],i+1,concrete,wood,fuel,longRoute?80:20);
   var playerObject=new GameObject("Player");playerObject.layer=2;playerObject.transform.position=new Vector3(0,1.3f,-2);
   var cc=playerObject.AddComponent<CharacterController>();cc.height=1.8f;cc.radius=.28f;cc.center=new Vector3(0,.9f,0);cc.stepOffset=.3f;
+  var inventory=playerObject.AddComponent<ResourceInventory>();
   var player=playerObject.AddComponent<FirstPersonMotor>();player.train=train;
   var cameraObject=new GameObject("Player Camera");cameraObject.tag="MainCamera";cameraObject.transform.SetParent(playerObject.transform,false);cameraObject.transform.localPosition=Vector3.up*1.65f;
   var cam=cameraObject.AddComponent<Camera>();cam.nearClipPlane=.05f;cam.farClipPlane=350;cam.fieldOfView=75;cameraObject.AddComponent<AudioListener>();
   cam.gameObject.AddComponent<UniversalAdditionalCameraData>().renderPostProcessing=true;player.view=cam;
-  var ui=playerObject.AddComponent<PrototypeUI>();ui.player=player;ui.train=train;ui.cab=cab;
+  var ui=playerObject.AddComponent<PrototypeUI>();ui.player=player;ui.train=train;ui.cab=cab;ui.inventory=inventory;
   var world=new GameObject("Route Streamer").AddComponent<RouteChunks>();world.train=train;world.grass=grass;world.wood=wood;world.leaves=foliage;world.steel=metal;
   var sun=new GameObject("Sun").AddComponent<Light>();sun.type=LightType.Directional;sun.shadows=LightShadows.Soft;RenderSettings.sun=sun;
   var cycle=sun.gameObject.AddComponent<SummerLighting>();cycle.sun=sun;

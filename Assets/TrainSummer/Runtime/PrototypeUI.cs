@@ -1,37 +1,62 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 namespace TrainSummer {
+[DefaultExecutionOrder(200)]
 public sealed class PrototypeUI:MonoBehaviour {
- public FirstPersonMotor player; public TrainMotor train;
- public Transform cab;
- FuelPickup target; bool english,showFps=true; float smooth;
+ public FirstPersonMotor player;public TrainMotor train;public Transform cab;public ResourceInventory inventory;
+ readonly List<MonoBehaviour> candidates=new List<MonoBehaviour>(8);
+ IInteractable target;bool english,showFps=true,inventoryOpen,showHelp;float smooth,statusUntil;string status="";
  string T(string ru,string en)=>english?en:ru;
  void Update(){
-  smooth=Mathf.Lerp(smooth,Time.unscaledDeltaTime,0.08f);
-  var k=Keyboard.current;if(k==null)return;
+  smooth=Mathf.Lerp(smooth,Time.unscaledDeltaTime,.08f);var k=Keyboard.current;if(k==null)return;
   if(k.f1Key.wasPressedThisFrame)english=!english;
   if(k.f2Key.wasPressedThisFrame)showFps=!showFps;
-  target=null;
-  if(!player.Locked)return;
-  if(Physics.Raycast(player.view.transform.position,player.view.transform.forward,out var hit,3f,~(1<<player.gameObject.layer),QueryTriggerInteraction.Ignore))target=hit.collider.GetComponentInParent<FuelPickup>();
+  if(k.f3Key.wasPressedThisFrame)showHelp=!showHelp;
+  if(k.tabKey.wasPressedThisFrame)inventoryOpen=!inventoryOpen;
+  target=null;if(!player.Locked || inventoryOpen)return;
+  if(Physics.Raycast(player.view.transform.position,player.view.transform.forward,out var hit,3f,~(1<<player.gameObject.layer),QueryTriggerInteraction.Ignore)){
+   candidates.Clear();hit.collider.GetComponentsInParent<MonoBehaviour>(false,candidates);
+   foreach(var candidate in candidates)if(candidate is IInteractable interactable){target=interactable;break;}
+  }
   if(k.eKey.wasPressedThisFrame){
-   if(target!=null)target.Collect(train);
-   else if(train.PlayerAboard && Vector3.Distance(player.transform.position,cab.position)<3)train.ToggleBrake();
+   if(target!=null){status=target.Interact(train,inventory,english);statusUntil=Time.unscaledTime+4;}
+   else if(train.PlayerAboard && Vector3.Distance(player.transform.position,cab.position)<3){train.ToggleBrake();}
   }
  }
  void OnGUI(){
-  GUI.Box(new Rect(16,16,460,185),T("ЛЕТНИЙ МАРШРУТ — технический прототип","SUMMER ROUTE — technical prototype"));
-  GUI.Label(new Rect(28,44,400,25),T("Скорость / Топливо: ","Speed / Fuel: ")+ $"{train.Speed:0.0} m/s / {train.Fuel:0.0}");
-  GUI.Label(new Rect(28,70,400,25),T("WASD — движение; мышь — обзор; Space — прыжок","WASD move; mouse look; Space jump"));
-  GUI.Label(new Rect(28,95,400,25),T("E — топливо / управление у пульта; Esc — курсор","E collect / cab control; Esc cursor"));
-  GUI.Label(new Rect(28,120,430,25),"F1 RU/EN · F2 FPS");
-  GUI.Label(new Rect(28,145,430,25),T("До остановки: ","Next stop: ")+Mathf.Max(0,train.NextStopDistance-train.Distance).ToString("0")+" m");
-  if(showFps)GUI.Label(new Rect(Screen.width-100,16,100,25),$"{1f/Mathf.Max(smooth,0.001f):0} FPS");
-  GUI.Label(new Rect(Screen.width/2-5,Screen.height/2-12,30,30),"+");
-  string prompt=target!=null?T("E — взять топливо","E — collect fuel"):
-   train.Finished?T("Конец тестового маршрута.","End of the test route."):
-   train.Parked?T("Топливо в доме за платформой. Вернись к пульту.","Fuel is in the house beyond the platform. Return to the cab."):"";
-  GUI.Label(new Rect(Screen.width/2-240,Screen.height-70,600,35),prompt);
+  GUI.Box(new Rect(16,16,310,112),T("ЛЕТНИЙ МАРШРУТ","SUMMER ROUTE"));
+  GUI.Label(new Rect(28,43,290,25),T("Скорость / топливо: ","Speed / fuel: ")+$"{train.Speed:0.0} m/s / {train.Fuel:0.0}");
+  GUI.Label(new Rect(28,68,290,25),T("До остановки: ","Next stop: ")+Mathf.Max(0,train.NextStopDistance-train.Distance).ToString("0")+" m");
+  if(train.maintenance!=null)GUI.Label(new Rect(28,93,290,25),T("Состояние поезда: ","Train condition: ")+train.maintenance.Condition.ToString("0")+"%");
+  if(showFps)GUI.Label(new Rect(Screen.width-100,16,100,25),$"{1f/Mathf.Max(smooth,.001f):0} FPS");
+  if(!inventoryOpen && player.Locked)GUI.Label(new Rect(Screen.width/2-5,Screen.height/2-12,30,30),"+");
+  string prompt="";
+  if(inventoryOpen)prompt=T("Tab — закрыть список ресурсов","Tab — close resources");
+  else if(!player.Locked)prompt=T("Esc — вернуться к управлению","Esc — resume controls");
+  else if(target!=null)prompt=target.Prompt(english);
+  else if(train.Finished)prompt=T("Конец тестового маршрута.","End of the test route.");
+  else if(train.maintenance!=null && train.maintenance.Broken)prompt=T("Поломка. Остановись и используй верстак.","Breakdown. Stop and use the workbench.");
+  else if(train.PlayerAboard && Vector3.Distance(player.transform.position,cab.position)<3)prompt=T("E — тормоз / отправление","E — brake / depart");
+  else if(train.Parked)prompt=T("Топливо и ящик припасов — в доме за платформой.","Fuel and a supply crate are in the station house.");
+  GUI.Label(new Rect(Screen.width/2-340,Screen.height-65,720,30),prompt);
+  if(Time.unscaledTime<statusUntil)GUI.Label(new Rect(Screen.width/2-340,Screen.height-100,720,30),status);
+  GUI.Label(new Rect(18,Screen.height-30,450,25),T("Tab — ресурсы · F3 — управление","Tab — resources · F3 — controls"));
+  if(inventoryOpen && inventory!=null){
+   float x=Screen.width/2-220,y=Screen.height/2-115;
+   GUI.Box(new Rect(x,y,440,230),T("СОБРАННЫЕ РЕСУРСЫ","COLLECTED RESOURCES"));
+   GUI.Label(new Rect(x+20,y+45,400,30),T("Металлические детали: ","Metal parts: ")+inventory.MetalParts);
+   GUI.Label(new Rect(x+20,y+80,400,30),T("Ткань: ","Cloth: ")+inventory.Cloth);
+   var m=train.maintenance;
+   if(m!=null)GUI.Label(new Rect(x+20,y+125,400,55),english?
+    $"Repair: {m.partsPerRepair} parts + {m.clothPerRepair} cloth → up to +{m.repairAmount:0}%.\nWorkbench: rear left of the railcar.":
+    $"Ремонт: {m.partsPerRepair} детали + {m.clothPerRepair} ткань → до +{m.repairAmount:0}%.\nВерстак находится сзади слева в вагоне.");
+   GUI.Label(new Rect(x+20,y+195,400,25),T("Мир продолжает двигаться.","The world keeps running."));
+  }
+  if(showHelp){
+   GUI.Box(new Rect(16,145,470,170),T("УПРАВЛЕНИЕ","CONTROLS"));
+   GUI.Label(new Rect(28,175,445,130),T("WASD — ходьба, мышь — обзор, Space — прыжок\nE — взаимодействие, Esc — курсор\nTab — ресурсы, F1 — RU/EN, F2 — FPS\nРемонт доступен при остановленном поезде.\nЯщики можно обыскать один раз за сессию.","WASD move, mouse look, Space jump\nE interact, Esc cursor\nTab resources, F1 RU/EN, F2 FPS\nStop the train to repair it.\nCrates can be looted once per session."));
+  }
  }
 }
 }

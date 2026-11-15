@@ -34,6 +34,10 @@ public static class ModelSetup {
   if(material==null){material=new Material(Shader.Find("Universal Render Pipeline/Lit"));AssetDatabase.CreateAsset(material,path);}
   Color color=new Color(.14f,.22f,.18f);float metallic=.5f;
   switch(key){
+   case "PropWood":color=new Color(.30f,.19f,.09f);metallic=0;break;
+   case "PropSteel":color=new Color(.13f,.15f,.14f);metallic=.75f;break;
+   case "PropPaint":color=new Color(.26f,.32f,.16f);metallic=.2f;break;
+   case "PropMark":color=new Color(.65f,.57f,.34f);metallic=0;break;
    case "TrainSteel":color=new Color(.12f,.14f,.15f);metallic=.8f;break;
    case "TrainWood":color=new Color(.30f,.18f,.085f);metallic=0;break;
    case "TrainSeat":color=new Color(.18f,.105f,.055f);metallic=0;break;
