@@ -40,6 +40,12 @@ public sealed class ResourcesAndRepairTests {
  [Test]public void NegativeTransactionsAreRejected(){
   Assert.IsFalse(inventory.TryAdd(-1,4));Assert.IsFalse(inventory.TrySpend(-1,0));Assert.AreEqual(0,inventory.MetalParts);Assert.AreEqual(0,inventory.Cloth);
  }
+ [Test]public void RepairDoesNotAutomaticallyRestartBrokenTrain(){
+  maintenance.ApplyWear(100000);train.Tick(1);inventory.TryAdd(3,1);
+  Assert.AreEqual(RepairResult.Repaired,maintenance.TryRepair(inventory));
+  train.Tick(1);Assert.AreEqual(0,train.Speed);
+  train.PlayerAboard=true;Assert.IsTrue(train.Depart());train.Tick(1);Assert.Greater(train.Speed,0);
+ }
  [Test]public void BrokenTrainCannotDepartUntilRepaired(){
   maintenance.ApplyWear(100000);train.PlayerAboard=true;
   Assert.IsTrue(maintenance.Broken);Assert.IsFalse(train.Depart());

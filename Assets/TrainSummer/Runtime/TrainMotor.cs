@@ -30,6 +30,8 @@ public sealed class TrainMotor:MonoBehaviour {
  void Update(){Tick(Time.deltaTime);}
  public void Tick(float dt){
   if(route==null || dt<=0)return;
+  // A breakdown or empty tank latches the brake; service must not restart an unattended train.
+  if(Fuel<=0 || (maintenance!=null && maintenance.Broken))brake=true;
   float remaining=Mathf.Max(0,NextStopDistance-Distance);
   float target=(brake || Fuel<=0 || Parked || Finished || (maintenance!=null && maintenance.Broken))?0:Mathf.Min(cruiseSpeed,Mathf.Sqrt(2*acceleration*remaining));
   Speed=Mathf.MoveTowards(Speed,target,acceleration*dt);
