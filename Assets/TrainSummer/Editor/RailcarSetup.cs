@@ -2,47 +2,8 @@ using UnityEditor;
 using UnityEngine;
 namespace TrainSummer.Editor {
 public static class RailcarSetup {
- static Transform Find(Transform root,string name){
-  foreach(var t in root.GetComponentsInChildren<Transform>(true))if(t.name==name)return t;
-  return null;
- }
  public static Transform Build(Transform parent,Material fallback){
-  var asset=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Models/SummerRailcar.fbx");
-  bool detailed=asset!=null;
-  if(detailed){
-   var visual=(GameObject)PrefabUtility.InstantiatePrefab(asset,parent);
-   visual.name="Railcar Visual";visual.transform.localPosition=Vector3.zero;
-   var right=Find(visual.transform,"AxisRight");var forward=Find(visual.transform,"AxisForward");var up=Find(visual.transform,"AxisUp");
-   if(right!=null && forward!=null && up!=null){
-    Vector3 f=parent.InverseTransformVector(forward.position-visual.transform.position);
-    Vector3 u=parent.InverseTransformVector(up.position-visual.transform.position);
-    float unit=parent.InverseTransformVector(right.position-visual.transform.position).magnitude;
-    visual.transform.localRotation=Quaternion.Inverse(Quaternion.LookRotation(f,u))*visual.transform.localRotation;
-    if(unit>.0001f)visual.transform.localScale/=unit;
-   }
-   string folder="Assets/TrainSummer/Generated";
-   foreach(var renderer in visual.GetComponentsInChildren<MeshRenderer>(true)){
-    renderer.enabled=true;
-    var shared=renderer.sharedMaterials;
-    for(int i=0;i<shared.Length;i++){
-     string name=renderer.name;Color color=new Color(.14f,.22f,.18f);float metallic=.5f;
-     if(name.Contains("Steel")){color=new Color(.12f,.14f,.15f);metallic=.8f;}
-     else if(name.Contains("Wood")){color=new Color(.30f,.18f,.085f);metallic=0;}
-     else if(name.Contains("Seat")){color=new Color(.18f,.105f,.055f);metallic=0;}
-     else if(name.Contains("Trim")){color=new Color(.72f,.63f,.40f);metallic=.45f;}
-     else if(name.Contains("Gauge")){color=new Color(.025f,.04f,.035f);metallic=.2f;}
-     string key=name.Substring(name.IndexOf('_')+1);string path=folder+"/"+key+".mat";
-     var material=AssetDatabase.LoadAssetAtPath<Material>(path);
-     if(material==null){material=new Material(Shader.Find("Universal Render Pipeline/Lit"));AssetDatabase.CreateAsset(material,path);}
-     material.color=color;material.SetFloat("_Metallic",metallic);material.SetFloat("_Smoothness",.35f);material.enableInstancing=true;
-     shared[i]=material;
-    }
-    renderer.sharedMaterials=shared;
-   }
-   var group=visual.AddComponent<LODGroup>();var lods=new LOD[3];float[] heights={.20f,.075f,.015f};
-   for(int i=0;i<3;i++){var root=Find(visual.transform,"LOD"+i);if(root!=null){root.gameObject.SetActive(true);lods[i]=new LOD(heights[i],root.GetComponentsInChildren<Renderer>(true));}}
-   group.SetLODs(lods);group.RecalculateBounds();
-  }
+  bool detailed=ModelSetup.Attach("Assets/Models/SummerRailcar.fbx",parent)!=null;
   var collision=new GameObject("Railcar Colliders").transform;collision.SetParent(parent,false);
   Box(collision,"Floor",new Vector3(0,1,0),new Vector3(3,.3f,12),fallback,detailed);
   Box(collision,"Roof",new Vector3(0,4,0),new Vector3(3.2f,.2f,12),fallback,detailed);

@@ -15,18 +15,19 @@ public static class PrototypeBuilder {
   var g=GameObject.CreatePrimitive(PrimitiveType.Cube);g.name=name;g.transform.SetParent(parent,false);g.transform.localPosition=position;g.transform.localScale=size;g.GetComponent<Renderer>().sharedMaterial=mat;return g;
  }
  [MenuItem("Train Summer/Create Prototype Scene")]
- public static void Build(){
+ public static void Build(){Build(false);}
+ [MenuItem("Train Summer/Create Long Route Scene")]
+ public static void BuildLong(){Build(true);}
+ static void Build(bool longRoute){
   if(!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())return;
   System.IO.Directory.CreateDirectory(Root);AssetDatabase.Refresh();
   var scene=EditorSceneManager.NewScene(NewSceneSetup.EmptyScene,NewSceneMode.Single);
   var grass=Mat("Grass",new Color(.27f,.38f,.12f));var wood=Mat("Wood",new Color(.25f,.17f,.10f));var metal=Mat("Steel",new Color(.22f,.26f,.23f),.7f);var foliage=Mat("Leaves",new Color(.20f,.34f,.09f));var concrete=Mat("Concrete",new Color(.45f,.44f,.37f));var fuel=Mat("Fuel",new Color(.55f,.24f,.08f),.4f);
-  var trainObject=new GameObject("Train");var train=trainObject.AddComponent<TrainMotor>();
+  var route=new GameObject("Route Path").AddComponent<RoutePath>();if(longRoute)route.forwardExtent=15600;route.Rebuild();
+  var trainObject=new GameObject("Train");var train=trainObject.AddComponent<TrainMotor>();train.route=route;
+  if(longRoute){train.stops=new float[]{2800,6000,9200,12400};train.startingFuel=75;}
   var cab=RailcarSetup.Build(trainObject.transform,metal);
-  var station=new GameObject("Station");
-  Box(station.transform,"Platform",new Vector3(6,.35f,160),new Vector3(7,.7f,26),concrete);
-  Box(station.transform,"Shelter roof",new Vector3(7,3.7f,164),new Vector3(5,.2f,8),wood);
-  foreach(float z in new[]{161f,167f})Box(station.transform,"Pillar",new Vector3(8,2,z),new Vector3(.25f,3.4f,.25f),wood);
-  Box(station.transform,"Fuel can",new Vector3(7,1.1f,160),new Vector3(.5f,.7f,.35f),fuel).AddComponent<FuelPickup>();
+  for(int i=0;i<train.stops.Length;i++)StationSetup.Build(route,train.stops[i],i+1,concrete,wood,fuel,longRoute?80:20);
   var playerObject=new GameObject("Player");playerObject.layer=2;playerObject.transform.position=new Vector3(0,1.3f,-2);
   var cc=playerObject.AddComponent<CharacterController>();cc.height=1.8f;cc.radius=.28f;cc.center=new Vector3(0,.9f,0);cc.stepOffset=.3f;
   var player=playerObject.AddComponent<FirstPersonMotor>();player.train=train;
@@ -43,7 +44,7 @@ public static class PrototypeBuilder {
   var profile=ScriptableObject.CreateInstance<VolumeProfile>();AssetDatabase.CreateAsset(profile,AssetDatabase.GenerateUniqueAssetPath(Root+"/SummerVolume.asset"));volume.sharedProfile=profile;
   var tone=profile.Add<Tonemapping>(true);tone.mode.Override(TonemappingMode.ACES);
   var bloom=profile.Add<Bloom>(true);bloom.intensity.Override(.15f);bloom.threshold.Override(1.1f);
-  EditorSceneManager.SaveScene(scene,Root+"/Prototype.unity");AssetDatabase.SaveAssets();
+  EditorSceneManager.SaveScene(scene,Root+(longRoute?"/Prototype_Long.unity":"/Prototype.unity"));AssetDatabase.SaveAssets();
   Selection.activeGameObject=playerObject;
   Debug.Log("Prototype ready. Press Play. Requires URP 14 and Input System with Active Input Handling set to Input System or Both.");
  }

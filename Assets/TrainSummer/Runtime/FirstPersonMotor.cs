@@ -15,6 +15,8 @@ public sealed class FirstPersonMotor:MonoBehaviour {
   var k=Keyboard.current;var m=Mouse.current;if(k==null||m==null)return;
   float dt=Time.deltaTime;if(dt<=0)return;
   if(k.escapeKey.wasPressedThisFrame)Lock(!Locked);
+  // Train and pooled world transforms move before this controller.
+  Physics.SyncTransforms();
   bool jump=Locked && controller.isGrounded && k.spaceKey.wasPressedThisFrame;
   Vector3 platformVelocity=Vector3.zero;
   bool hadSupport=support!=null;
@@ -51,6 +53,6 @@ public sealed class FirstPersonMotor:MonoBehaviour {
   train.PlayerAboard=support!=null || (Mathf.Abs(local.x)<1.5f && Mathf.Abs(local.z)<6 && local.y>1 && local.y<4);
   if(transform.position.y< -15)Respawn();
  }
- void Respawn(){controller.enabled=false;transform.position=train.transform.position+new Vector3(0,1.4f,-2);controller.enabled=true;vertical=0;inheritedVelocity=Vector3.zero;support=null;}
+ void Respawn(){controller.enabled=false;transform.position=train.transform.TransformPoint(new Vector3(0,1.4f,-2));transform.rotation=train.transform.rotation;controller.enabled=true;vertical=0;inheritedVelocity=Vector3.zero;support=null;}
 }
 }
