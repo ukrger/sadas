@@ -2,8 +2,8 @@
 
 Исходники и собственные модели для Unity 2022.3 LTS / URP 14.
 
-- [Скачать полный пакет 0.8](https://github.com/ukrger/sadas/releases/download/v0.8/TrainSummer_Prototype_0.8.zip)
-- [Скачать все модели FBX + Blender](https://github.com/ukrger/sadas/releases/download/v0.8/TrainSummer_Models_0.8.zip)
+- [Скачать полный пакет 0.8](https://raw.githubusercontent.com/ukrger/sadas/main/Downloads/TrainSummer_Prototype_0.8.zip)
+- [Скачать все модели FBX + Blender](https://raw.githubusercontent.com/ukrger/sadas/main/Downloads/TrainSummer_Models_0.8.zip)
 - [Установка и системы](README_RU.md)
 - [Что действительно проверено](TEST_REPORT.md)
 
