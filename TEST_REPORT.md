@@ -1,17 +1,16 @@
-# Validation — prototype 0.7
+# Validation — prototype 0.8
 
 ## Executed
-- **36 checks compiled and executed with C# Roslyn / .NET 8.** Actual production sources: AtomicFileStore, InventoryModel, NeedsModel, InventoryState, WeaponSlot, CraftingRules. Checks cover atomic writes/backups/checksums, resource/ammo transactions, capacity, restore validation, both crafting recipes, failed crafts without spending, new supplies, needs restoration, pause, saturation, starvation timing and frame subdivision.
-- **Blender 4.3.2:** water bottle, canned food and repair kit generated/exported and reimported from FBX. Checked LOD mesh/triangle counts, unit markers, height and upper surfaces. Inventory layout rendered from exported models as an illustrative Blender preview.
-- All 63 C# source files syntax-parsed with tree-sitter. This does not compile Unity APIs.
-- URP 14 source inspected for camera depth and shadow-resolution APIs. Removed assignment to read-only clearDepth; replaced the inaccessible runtime shadow-resolution setter with Editor-generated pipeline presets and runtime copies.
-- Menu dictionaries and assembly-definition JSON validated. Package integrity/download hashes checked when publishing.
+- **46 actual production-core checks compiled and executed with C# Roslyn / .NET 8.** Previous file/inventory/crafting/needs checks plus EnvironmentLayout: 7-tile normal window, stranded-player coverage, overlapping windows, fixed capacity and unique indices across teleports, deterministic placement, station/ruin/track clearances and ruin orientation. A failing tree-vs-ruin clearance check exposed a placement defect; the rule was corrected and all checks passed.
+- **Blender 4.3.2:** birch, pine and overgrown house generated, exported and reimported. Checked mesh/triangle counts for all three LODs, unit axis markers, height and vertex wind masks. House doorway and missing roof quadrant checked with geometry rays.
+- All 69 C# files syntax-parsed with tree-sitter. Python generators syntax-checked. Menu/assembly JSON validated.
+- URP 14 shader-source signatures inspected for UniversalFragmentPBR, InputData, GetShadowCoord and ApplyShadowBias. This is an API/source inspection, not shader compilation.
+- Blender assembly preview generated from exported meshes. Package/download hashes checked at publication.
 
 ## Provided, not executed here
-- Unity EditMode tests from prior versions, plus crafting, repair-kit use and schema-1 migration preservation/rejection cases.
-- Existing Unity PlayMode projectile/pause tests.
+- Unity tests from earlier releases, plus route projection, track normals/bounds, transformed vegetation bounds and ShaderUtil.ShaderHasError for the new foliage shader.
 
 ## Not verified
-Unity is absent. No Unity compilation, scene generation, camera-stack execution, pointer picking, train/platform interaction, runtime migration, complete save round trip, AI/animation/audio integration, Windows build or FPS measurement was possible. In particular, verify Forward renderer camera stacking, cursor handling across pause/resume, save/load while inventory is open, and migration of a real 0.6 save before relying on the feature.
+No Unity installation is available. C# Unity compilation, HLSL compilation, scene generation, native mesh-collider cooking, GPU instancing, shader lighting/shadows/depth, actual runtime tile retention, save/load integration, NavMesh behavior, Windows builds and performance have not been run. The source reduces renderer/collider component counts, but this does not establish an FPS improvement. Use Frame Debugger, CPU/GPU Profiler and a target-PC Development Build.
 
-InventoryClothLayout.png is a Blender assembly preview, not an in-game screenshot. The current physical inventory uses fixed category slots and actual meshes; drag-and-drop, hands and cloth physics are not implemented.
+SummerRouteEnvironment.png and individual model previews are Blender renders, not Unity screenshots. The layout preview is illustrative; it does not show runtime grass, wind, camera stacking or performance. Vegetation is a technical geometry/material pass, not final photorealistic art.

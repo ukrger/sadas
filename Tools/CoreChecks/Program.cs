@@ -47,6 +47,22 @@ class Program {
    var oneFrame=new NeedsModel();oneFrame.Restore(1,1);double totalDamage=0;var manyFrames=new NeedsModel();manyFrames.Restore(1,1);
    for(int i=0;i<1000;i++)totalDamage+=manyFrames.Advance(.1f,.025f,.045f);
    float oneDamage=oneFrame.Advance(100,.025f,.045f);Check(Math.Abs(totalDamage-oneDamage)<.001,"needs depletion is independent of frame subdivision");
+   var window=new System.Collections.Generic.List<int>();EnvironmentLayout.Window(0,0,window);Check(window.Count==7 && window[0]==-2 && window[6]==4,"seven tiles around a boarding player");
+   EnvironmentLayout.Window(0,-20,window);Check(window.Count==10 && window.Contains(-20) && window.Contains(-21) && window.Contains(-19),"stranded player keeps nearby ground");
+   EnvironmentLayout.Window(10,13,window);Check(window.Count==7,"overlapping windows do not duplicate tiles");
+   bool capacity=true;for(int i=-200;i<=200;i++){EnvironmentLayout.Window(i,-i,window);capacity&=window.Count>=7 && window.Count<=EnvironmentLayout.PoolCapacity;for(int j=1;j<window.Count;j++)capacity&=window[j]>window[j-1];}Check(capacity,"tile window stays unique and bounded across teleports");
+   float[] stops={160,640,1200,1800};var treeA=EnvironmentLayout.Tree(4,13,stops);var treeB=EnvironmentLayout.Tree(4,13,stops);Check(treeA.distance==treeB.distance && treeA.offset==treeB.offset && treeA.scale==treeB.scale && treeA.species==treeB.species,"tree layout is deterministic");
+   bool stationClear=true,ruinClear=true,trackClear=true,spacing=true,doors=true;
+   for(int tile=-3;tile<60;tile++){
+    var ruin=EnvironmentLayout.Ruin(tile,stops);if(ruin.active){foreach(float stop in stops)spacing&=Math.Abs(ruin.distance-stop)>=65;doors&=ruin.offset>0?ruin.yaw==90:ruin.yaw==-90;}
+    for(int i=0;i<EnvironmentLayout.TreesPerTile;i++){
+     var tree=EnvironmentLayout.Tree(tile,i,stops);trackClear&=Math.Abs(tree.offset)>=14;
+     foreach(float stop in stops)if(tree.offset>0 && Math.Abs(tree.distance-stop)<32)stationClear&=tree.offset>=27;
+     if(ruin.active && Math.Abs(tree.distance-ruin.distance)<8)ruinClear&=Math.Abs(tree.offset-ruin.offset)>=8;
+    }
+    for(int i=0;i<EnvironmentLayout.GrassPerTile;i++)trackClear&=Math.Abs(EnvironmentLayout.Grass(tile,i,stops).offset)>=2.8f;
+   }
+   Check(stationClear,"tree trunks avoid station footprint");Check(ruinClear,"tree trunks avoid pooled ruins");Check(trackClear,"vegetation leaves the track corridor clear");Check(spacing,"ruins avoid station stops");Check(doors,"ruin doors face the route");
    Console.WriteLine(checks+" standalone .NET core checks passed. These are not Unity tests.");
   }finally{Directory.Delete(root,true);}
  }

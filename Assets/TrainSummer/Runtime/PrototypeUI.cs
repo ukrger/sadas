@@ -4,12 +4,13 @@ using UnityEngine.InputSystem;
 namespace TrainSummer {
 [DefaultExecutionOrder(200)]
 public sealed class PrototypeUI:MonoBehaviour {
+ public RouteChunks world;public VegetationRenderer vegetation;
  public PlayerVitals vitals;public InventoryMatView matView;
  public bool InventoryOpen=>inventoryOpen;
  public void OpenInventory(){if(vitals!=null && !vitals.Alive)return;inventoryOpen=true;if(matView!=null)matView.SetOpen(true);}public void CloseInventory(){inventoryOpen=false;if(matView!=null)matView.SetOpen(false);}
  public FirstPersonMotor player;public TrainMotor train;public Transform cab;public ResourceInventory inventory;
  readonly List<MonoBehaviour> candidates=new List<MonoBehaviour>(8);
- IInteractable target;bool inventoryOpen,showHelp;
+ IInteractable target;bool inventoryOpen,showHelp,showWorldStats;
  bool english=>Localizer.English;bool showFps=>SettingsService.Current.showFps;float smooth,statusUntil;string status="";
  string T(string ru,string en)=>english?en:ru;
  void Update(){
@@ -18,6 +19,7 @@ public sealed class PrototypeUI:MonoBehaviour {
   if(k.f1Key.wasPressedThisFrame){SettingsService.Current.english=!english;Localizer.SetLanguage(SettingsService.Current.english);}
   if(k.f2Key.wasPressedThisFrame)SettingsService.Current.showFps=!showFps;
   if(k.f3Key.wasPressedThisFrame)showHelp=!showHelp;
+  if(k.f4Key.wasPressedThisFrame)showWorldStats=!showWorldStats;
   if(k.tabKey.wasPressedThisFrame){if(inventoryOpen)CloseInventory();else OpenInventory();}
   target=null;if(!player.Locked || inventoryOpen || (vitals!=null && !vitals.Alive))return;
   if(k.hKey.wasPressedThisFrame){status=inventory!=null && inventory.TryHeal(vitals)?T("Здоровье восстановлено.","Health restored."):T("Лечение недоступно: нет аптечки или здоровье полное.","Cannot heal: no medkit or already healthy.");statusUntil=Time.unscaledTime+4;}
@@ -40,6 +42,12 @@ public sealed class PrototypeUI:MonoBehaviour {
   if(inventory.HasPistol)GUI.Label(new Rect(28,143,290,25),T("Патроны: ","Ammo: ")+inventory.Magazine+" / "+inventory.Ammo);
   var needs=player.GetComponent<PlayerNeeds>();if(needs!=null)GUI.Label(new Rect(28,168,290,25),T("Сытость / вода: ","Food / water: ")+needs.Hunger.ToString("0")+" / "+needs.Thirst.ToString("0"));
   if(showFps)GUI.Label(new Rect(Screen.width-100,16,100,25),$"{1f/Mathf.Max(smooth,.001f):0} FPS");
+  if(showWorldStats && world!=null && vegetation!=null){
+   GUI.Box(new Rect(Screen.width-330,50,310,105),T("ОКРУЖЕНИЕ — F4","ENVIRONMENT — F4"));
+   GUI.Label(new Rect(Screen.width-316,78,290,25),T("Участки: ","Tiles: ")+world.ActiveCount+" / "+world.CreatedCount);
+   GUI.Label(new Rect(Screen.width-316,103,290,25),T("Видимые растения: ","Visible plants: ")+vegetation.VisibleInstances);
+   GUI.Label(new Rect(Screen.width-316,128,290,25),T("Подачи мешей: ","Mesh submissions: ")+vegetation.SubmittedDrawCalls);
+  }
   if(!inventoryOpen && player.Locked)GUI.Label(new Rect(Screen.width/2-5,Screen.height/2-12,30,30),"+");
   string prompt="";
   if(vitals!=null && !vitals.Alive)prompt=T("Ты погиб. R — вернуться в поезд.","You died. R — respawn on the train.");

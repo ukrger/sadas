@@ -28,6 +28,13 @@ public sealed class RoutePath:MonoBehaviour {
   float slope=amplitude/Mathf.Max(20,wavelength)*Mathf.Sin(pos.z/Mathf.Max(20,wavelength));
   return Make(pos,new Vector3(slope,0,1));
  }
+ public float ProjectDistance(Vector3 worldPosition){
+  EnsureBuilt();float z=transform.InverseTransformPoint(worldPosition).z;int last=points.Length-1;
+  if(z<points[0].z)return (z-points[0].z)/(points[1]-points[0]).normalized.z;
+  if(z>points[last].z)return lengths[last]+(z-points[last].z)/(points[last]-points[last-1]).normalized.z;
+  int low=0,high=last;while(high-low>1){int middle=(low+high)/2;if(points[middle].z<=z)low=middle;else high=middle;}
+  return Mathf.Lerp(lengths[low],lengths[high],(z-points[low].z)/(points[high].z-points[low].z));
+ }
  Pose Make(Vector3 position,Vector3 tangent){return new Pose(transform.TransformPoint(position),transform.rotation*Quaternion.LookRotation(tangent,Vector3.up));}
 }
 }

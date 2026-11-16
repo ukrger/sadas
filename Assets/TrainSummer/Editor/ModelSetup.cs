@@ -32,12 +32,23 @@ public static class ModelSetup {
   }
   group.SetLODs(lods);group.RecalculateBounds();return visual;
  }
- static Material MaterialFor(string key){
+ public static Material MaterialFor(string key){
   string path="Assets/TrainSummer/Generated/"+key+".mat";
   var material=AssetDatabase.LoadAssetAtPath<Material>(path);
-  if(material==null){material=new Material(Shader.Find("Universal Render Pipeline/Lit"));AssetDatabase.CreateAsset(material,path);}
+  bool foliage=key=="EnvLeafBroad" || key=="EnvLeafPine" || key=="EnvIvy" || key=="EnvGrass";
+  var shader=foliage?Shader.Find("TrainSummer/FoliageWind"):Shader.Find("Universal Render Pipeline/Lit");if(shader==null)shader=Shader.Find("Universal Render Pipeline/Lit");
+  if(material==null){material=new Material(shader);AssetDatabase.CreateAsset(material,path);}else if(material.shader!=shader)material.shader=shader;
   Color color=new Color(.14f,.22f,.18f);float metallic=.5f;
   switch(key){
+   case "EnvBark":color=new Color(.25f,.18f,.105f);metallic=0;break;
+   case "EnvBirchBark":color=new Color(.55f,.52f,.42f);metallic=0;break;
+   case "EnvLeafBroad":color=new Color(.20f,.38f,.075f);metallic=0;break;
+   case "EnvLeafPine":color=new Color(.10f,.25f,.085f);metallic=0;break;
+   case "EnvPlaster":color=new Color(.52f,.46f,.34f);metallic=0;break;
+   case "EnvBrick":color=new Color(.32f,.19f,.12f);metallic=0;break;
+   case "EnvRoof":color=new Color(.22f,.20f,.17f);metallic=.45f;break;
+   case "EnvIvy":color=new Color(.16f,.30f,.06f);metallic=0;break;
+   case "EnvGrass":color=new Color(.24f,.36f,.08f);metallic=0;break;
    case "SupplyBottle":color=new Color(.14f,.29f,.25f);metallic=.15f;break;
    case "SupplyLabel":color=new Color(.68f,.70f,.54f);metallic=0;break;
    case "SupplyCan":color=new Color(.42f,.32f,.15f);metallic=.25f;break;
@@ -72,7 +83,9 @@ public static class ModelSetup {
    case "HouseStone":color=new Color(.34f,.33f,.29f);metallic=0;break;
    case "HouseTrim":color=new Color(.43f,.37f,.24f);metallic=0;break;
   }
-  material.color=color;material.SetFloat("_Metallic",metallic);material.SetFloat("_Smoothness",key.StartsWith("House")?.18f:.35f);material.enableInstancing=true;return material;
+  material.color=color;if(material.HasProperty("_Metallic"))material.SetFloat("_Metallic",metallic);material.SetFloat("_Smoothness",key.StartsWith("Env")?.08f:(key.StartsWith("House")?.18f:.35f));material.enableInstancing=true;
+  if(foliage){material.SetFloat("_WindAmplitude",key=="EnvIvy"?.025f:(key=="EnvGrass"?.045f:.10f));material.SetFloat("_WindSpeed",.8f);material.SetFloat("_TreeHeight",key=="EnvLeafPine"?11:(key=="EnvGrass"?.6f:(key=="EnvIvy"?4:9)));}
+  EditorUtility.SetDirty(material);return material;
  }
 }
 }

@@ -41,7 +41,7 @@ public static class PrototypeBuilder {
   ExpeditionSetup.ConfigurePlayer(train,player,inventory,ui,wood);
   InventorySetup.Configure(player,ui,inventory,metal,wood);
   CombatSetup.Player(player,ui,inventory,metal);CombatSetup.Stations(player,wood);
-  var world=new GameObject("Route Streamer").AddComponent<RouteChunks>();world.train=train;world.grass=grass;world.wood=wood;world.leaves=foliage;world.steel=metal;
+  var world=new GameObject("Route Streamer").AddComponent<RouteChunks>();world.train=train;world.grass=grass;world.wood=wood;world.steel=metal;EnvironmentSetup.Configure(world,player);ui.world=world;ui.vegetation=world.vegetation;
   var sun=new GameObject("Sun").AddComponent<Light>();sun.type=LightType.Directional;sun.shadows=LightShadows.Soft;RenderSettings.sun=sun;
   var cycle=sun.gameObject.AddComponent<SummerLighting>();cycle.sun=sun;
   RenderSettings.ambientMode=AmbientMode.Flat;RenderSettings.fog=true;RenderSettings.fogMode=FogMode.ExponentialSquared;RenderSettings.fogDensity=.003f;
