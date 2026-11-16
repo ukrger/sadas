@@ -1,0 +1,9 @@
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+PASS long route selects separate profile and station distances
+PASS distant long-route station NavMesh baked
+PASS real train tick reaches first long stop in approximately six minutes
+PASS long first leg consumes distance-based fuel and wear
+PASS long route also waits for its radio module
+PASS long-route departure and save contract valid
+RESULT: 6 long-route checks passed; schedule tick simulation, not a full real-time playthrough.

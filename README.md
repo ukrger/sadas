@@ -2,6 +2,7 @@
 
 Самостоятельный запускаемый проект **Godot Standard / GDScript / Forward+**. Unity, URP, .NET и Blender для запуска не нужны. Это первая игровая версия переноса, не финальная графика уровня UE4.
 
+- **[Скачать готовую Windows x64 игру (.exe в ZIP)](https://raw.githubusercontent.com/ukrger/sadas/main/Downloads/TrainSummer_Windows_0.1.zip)** — распаковать и запустить `TrainSummer.exe`, редактор не требуется.
 - **[Скачать Godot-проект 0.1](https://raw.githubusercontent.com/ukrger/sadas/main/Downloads/TrainSummer_Godot_0.1.zip)**
 - [Пошаговый запуск](Godot/README_RU.md) · [Исходники проекта](Godot) · [Результаты проверок](Godot/TEST_REPORT.md) · [Галерея](Godot/previews/README.md)
 
@@ -11,7 +12,7 @@
 
 Оптимизация: 10 чанков, MultiMesh/LOD/frustum, объединённый путь, conservative occlusion, ограниченные тени/трава и отключение дальних станций. Это архитектурные меры; **60 FPS на целевом ПК пока не подтверждены**.
 
-**Проверено настоящим Godot:** 73 основных проверки, 6 проверок длинного маршрута; реальный Vulkan Forward+ рендер через программный llvmpipe. Windows EXE и полный длинный playthrough не проверены. Все изображения ниже — реальные кадры движка, не Blender; обзор снят диагностической камерой.
+**Проверено настоящим Godot:** 73 основных проверки, 6 проверок длинного маршрута; реальный Vulkan Forward+ рендер через программный llvmpipe. Windows EXE экспортирован официальным шаблоном; его встроенный пакет прошёл те же 79 проверок на Linux. Нативный запуск в Windows и полный длинный playthrough не проверены. Все изображения ниже — реальные кадры движка, не Blender; обзор снят диагностической камерой.
 
 ![Godot Forward+ overview](Godot/previews/GodotOverview.png)
 

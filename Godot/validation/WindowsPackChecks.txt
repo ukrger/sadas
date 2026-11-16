@@ -1,0 +1,78 @@
+Godot Engine v4.6.3.stable.official.7d41c59c4 - https://godotengine.org
+
+PASS empty inventory valid
+PASS craft failure is atomic
+PASS resource pickups
+PASS repair recipe exact costs
+PASS medkit recipe exact costs
+PASS invalid pickups rejected
+PASS pistol ownership idempotent
+PASS pistol reload conserves ammo
+PASS pistol empty cannot fire
+PASS shotgun ownership idempotent
+PASS shotgun reload conserves ammo
+PASS shotgun empty cannot fire
+PASS rifle ownership idempotent
+PASS rifle reload conserves ammo
+PASS rifle empty cannot fire
+PASS armed inventory round trip valid
+PASS invalid magazine rejected
+PASS unowned selection rejected
+PASS normal seven-tile window
+PASS stranded player protected
+PASS chunk pool bounded across teleports
+PASS aim frame subdivision independence
+PASS pause and invalid aim time
+PASS start screen pauses tree
+PASS four stations and eight enemies instantiated
+PASS ten prewarmed chunks
+PASS both tree species with three LODs imported
+PASS SummerRailcar visible LOD0 loaded
+PASS ServicePistol visible LOD0 loaded
+PASS PumpShotgun visible LOD0 loaded
+PASS AutomaticRifle visible LOD0 loaded
+PASS PlayerHands visible LOD0 loaded
+PASS StationZombie visible LOD0 loaded
+PASS new game resumes simulation
+PASS initial scene snapshot validates
+PASS player supported by train floor
+PASS moving train support detected
+PASS train advances under physics
+CARRY MEASUREMENT local displacement=0.00002741892968 m after 6 seconds; speed=8.0
+PASS player remains on curved train at cruise speed
+PASS jump inherits train launch velocity
+PASS jump lands back on moving train
+PASS terrain has upward-facing physical surface
+PASS station NavMesh actually baked
+PASS eight actual pooled pellets apply damage
+PASS solid wall blocks actual bullet damage
+PASS actual JSON save writes and validates
+PASS file load restores real scene state
+PASS actual input enters ADS and narrows camera FOV
+PASS rifle sight aligns with camera center
+PASS pistol sight aligns after weapon switch
+PASS shotgun sight aligns after weapon switch
+PASS releasing RMB restores hip view
+PASS reload blocks ADS
+PASS save loads after a large train teleport
+PASS teleport load retains passenger support without launch impulse
+PASS second save rotates backup
+PASS corrupt primary falls back to backup
+PASS invalid restore rejected before scene mutation
+PASS departed station must retain recovered relay
+PASS departure gated by station relay
+PASS radio collection idempotent
+PASS train waits for player
+PASS relay and player permit departure
+PASS 3D backpack opens without pausing world
+PASS inventory uses an isolated world to prevent clipping into train furniture
+BAG PICK water=0 thirst before=49.99775 after=94.99775
+PASS clicking a 3D bag object uses the actual item
+PASS closing backpack resets aim and FOV
+PASS player far from train receives reserve chunks
+PASS projectile pool reports capacity for whole shotgun volley
+PASS destroyed boards stop blocking collisions
+PASS walk onto a step without jumping
+PASS pause freezes train simulation
+PASS pause resets ADS
+RESULT: 73 checks passed in Godot 4.6.3-stable (official). Headless tests do not verify GPU performance.

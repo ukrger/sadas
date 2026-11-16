@@ -73,7 +73,7 @@ Godot: Project → Open User Data Folder. Там save_short.json / autosave_shor
     godot --path .
     godot --path . -- --long-route
 
-В Godot Project → Export подготовлен Windows Desktop preset. Установи Export Templates для **той же версии** Godot, создай папку build, затем Export Project. Самостоятельный Windows EXE здесь не собран и не проверен; поставляется проект, запускаемый через редактор.
+В Godot Project → Export подготовлен Windows Desktop preset. Установи Export Templates для **той же версии** Godot, создай папку build, затем Export Project. Готовая Windows x64 сборка: https://raw.githubusercontent.com/ukrger/sadas/main/Downloads/TrainSummer_Windows_0.1.zip . Распакуйте и запустите TrainSummer.exe; редактор не нужен. Встроенный пакет прошёл 79 проверок на Linux. Нативный запуск в Windows здесь не проверен.
 
 ## Исходники моделей
 GLB включены полностью. Исходные BLEND/генераторы сохранены в Unity-репозитории: https://github.com/ukrger/sadas/tree/main/Tools/Blender . Повторный экспорт:

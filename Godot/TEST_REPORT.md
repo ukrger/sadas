@@ -36,3 +36,9 @@ Reproduce:
 On a graphics-capable machine:
 
     godot --path . --script res://tools/capture.gd
+
+
+## Windows export follow-up
+Official Godot 4.6.3 Windows x86_64 release templates were downloaded from the official Godot release archive; ZIP entry CRCs/version and template SHA-256 recorded during extraction. Windows Desktop release export succeeded without errors/warnings. TrainSummer.exe is a PE32+ x86_64 GUI executable with embedded GDPC payload; no external PCK is required.
+
+The embedded payload in the actual exported EXE booted with Linux Godot, then passed all 73 main + 6 long-route checks using external test scripts against the exported production scenes/bytecode/assets. This verifies packaging and runtime data, **not native execution of the PE binary on Windows**. No Windows/Wine environment is installed. Windows graphics/audio/hardware performance remain unverified. The ZIP includes a Compatibility launcher and engine/third-party license notices.

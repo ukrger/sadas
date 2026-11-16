@@ -1,0 +1,12 @@
+{
+  "game": "Train Summer Godot 0.1",
+  "platform": "Windows x86_64",
+  "engine": "Godot 4.6.3 stable official 7d41c59c4",
+  "source_commit": "222b64fc0d00abeca7f029fff6c69f7592993e48",
+  "embedded_pck": true,
+  "exe_bytes": 108859288,
+  "exe_sha256": "21dbfc335c38a38631d89cb1c988faa63933ac9e5853895b22cdc34b97c5b274",
+  "export_succeeded": true,
+  "native_windows_execution_tested": false,
+  "embedded_pack_checks_on_linux": 79
+}
