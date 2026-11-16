@@ -38,6 +38,10 @@ public static class ModelSetup {
   if(material==null){material=new Material(Shader.Find("Universal Render Pipeline/Lit"));AssetDatabase.CreateAsset(material,path);}
   Color color=new Color(.14f,.22f,.18f);float metallic=.5f;
   switch(key){
+   case "SupplyBottle":color=new Color(.14f,.29f,.25f);metallic=.15f;break;
+   case "SupplyLabel":color=new Color(.68f,.70f,.54f);metallic=0;break;
+   case "SupplyCan":color=new Color(.42f,.32f,.15f);metallic=.25f;break;
+   case "SupplyKit":color=new Color(.38f,.29f,.10f);metallic=.2f;break;
    case "GunSteel":color=new Color(.12f,.14f,.15f);metallic=.8f;break;
    case "GunGrip":color=new Color(.12f,.095f,.065f);metallic=0;break;
    case "AmmoCard":color=new Color(.39f,.29f,.15f);metallic=0;break;

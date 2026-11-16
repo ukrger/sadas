@@ -5,6 +5,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 namespace TrainSummer {
 [DefaultExecutionOrder(-400)]public sealed class SettingsService:MonoBehaviour {
+ public UniversalRenderPipelineAsset[] shadowPresets;
  public FirstPersonMotor player;public Camera view;public static GameSettings Current {get;private set;}=new GameSettings();
  int oldMipmap,oldVsync,oldFps;float oldLod;bool initialized;
  UniversalRenderPipelineAsset pipeline;RenderPipelineAsset oldGraphics,oldQuality;
@@ -16,8 +17,6 @@ namespace TrainSummer {
   catch(Exception ex){Debug.LogWarning("Using default settings: "+ex.Message);}
   oldMipmap=QualitySettings.globalTextureMipmapLimit;oldVsync=QualitySettings.vSyncCount;oldFps=Application.targetFrameRate;oldLod=QualitySettings.lodBias;
   oldGraphics=GraphicsSettings.renderPipelineAsset;oldQuality=QualitySettings.renderPipeline;initialized=true;
-  var source=GraphicsSettings.currentRenderPipeline as UniversalRenderPipelineAsset;
-  if(source!=null){pipeline=Instantiate(source);pipeline.name="Runtime URP Settings";GraphicsSettings.renderPipelineAsset=pipeline;QualitySettings.renderPipeline=pipeline;}
   Apply(!Application.isEditor);
  }
  public void Preset(int level){
@@ -28,10 +27,20 @@ namespace TrainSummer {
   s.textureLimit=Mathf.Clamp(s.textureLimit,0,2);s.shadowResolution=s.shadowResolution==1024 || s.shadowResolution==4096?s.shadowResolution:2048;s.msaa=s.msaa==1 || s.msaa==4?s.msaa:2;s.fpsLimit=s.fpsLimit==0?0:Mathf.Clamp(s.fpsLimit,30,240);s.screenMode=Mathf.Clamp(s.screenMode,0,2);
   Localizer.SetLanguage(s.english);QualitySettings.globalTextureMipmapLimit=s.textureLimit;QualitySettings.vSyncCount=s.vSync?1:0;Application.targetFrameRate=s.fpsLimit==0?-1:s.fpsLimit;
   QualitySettings.lodBias=s.quality==0?.7f:(s.quality==2?1.5f:1);
-  if(pipeline!=null){pipeline.renderScale=s.renderScale;pipeline.shadowDistance=s.shadowDistance;pipeline.mainLightShadowmapResolution=s.shadowResolution;pipeline.msaaSampleCount=s.msaa;}
+  EnsurePipeline(s);
+  if(pipeline!=null){pipeline.renderScale=s.renderScale;pipeline.shadowDistance=s.shadowDistance;pipeline.msaaSampleCount=s.msaa;}
   if(player!=null)player.sensitivity=s.sensitivity;
   if(view!=null){view.farClipPlane=s.drawDistance;view.GetUniversalAdditionalCameraData().renderPostProcessing=s.postProcessing;}
   if(screen){s.width=Mathf.Clamp(s.width,640,7680);s.height=Mathf.Clamp(s.height,480,4320);Screen.SetResolution(s.width,s.height,s.screenMode==0?FullScreenMode.Windowed:(s.screenMode==1?FullScreenMode.FullScreenWindow:FullScreenMode.ExclusiveFullScreen));}
+ }
+ void EnsurePipeline(GameSettings settings){
+  if(pipeline!=null && pipeline.mainLightShadowmapResolution==settings.shadowResolution)return;
+  UniversalRenderPipelineAsset source=null;
+  if(shadowPresets!=null)foreach(var preset in shadowPresets)if(preset!=null && preset.mainLightShadowmapResolution==settings.shadowResolution){source=preset;break;}
+  if(source==null)source=(oldQuality!=null?oldQuality:oldGraphics) as UniversalRenderPipelineAsset;
+  if(source==null)return;
+  if(source.mainLightShadowmapResolution!=settings.shadowResolution)settings.shadowResolution=source.mainLightShadowmapResolution;
+  var previous=pipeline;pipeline=Instantiate(source);pipeline.name="Runtime URP Settings";GraphicsSettings.renderPipelineAsset=pipeline;QualitySettings.renderPipeline=pipeline;if(previous!=null)Destroy(previous);
  }
  public bool Save(){try{AtomicFileStore.Write(PathFor,JsonUtility.ToJson(Current,true));Error="";return true;}catch(Exception ex){Error=ex.Message;return false;}}
  void OnDestroy(){if(!initialized)return;QualitySettings.globalTextureMipmapLimit=oldMipmap;QualitySettings.vSyncCount=oldVsync;QualitySettings.lodBias=oldLod;Application.targetFrameRate=oldFps;if(pipeline!=null){GraphicsSettings.renderPipelineAsset=oldGraphics;QualitySettings.renderPipeline=oldQuality;Destroy(pipeline);}}

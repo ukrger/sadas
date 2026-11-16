@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 namespace TrainSummer {
 [DefaultExecutionOrder(-300)]public sealed class GameMenu:MonoBehaviour {
+ public PrototypeUI ui;
  public SettingsService settings;public SessionSave saves;public static bool Paused {get;private set;}
  Vector2 scroll;string message="";Resolution[] resolutions;int resolutionIndex;
  void Awake(){Paused=false;Time.timeScale=1;var unique=new System.Collections.Generic.List<Resolution>();foreach(var r in Screen.resolutions)if(!unique.Exists(x=>x.width==r.width && x.height==r.height))unique.Add(r);resolutions=unique.ToArray();}
@@ -11,7 +12,7 @@ namespace TrainSummer {
   if(!Paused && k.f5Key.wasPressedThisFrame){saves.Save();message=saves.LastMessage;}
   if(!Paused && k.f9Key.wasPressedThisFrame){saves.Load();message=saves.LastMessage;}
  }
- void SetPaused(bool paused){Paused=paused;Time.timeScale=paused?0:1;Cursor.lockState=paused?CursorLockMode.None:CursorLockMode.Locked;Cursor.visible=paused;AudioListener.pause=paused;}
+ void SetPaused(bool paused){Paused=paused;Time.timeScale=paused?0:1;bool cursor=paused || (ui!=null && ui.InventoryOpen);Cursor.lockState=cursor?CursorLockMode.None:CursorLockMode.Locked;Cursor.visible=cursor;AudioListener.pause=paused;if(!paused && ui!=null)ui.player.SuppressLook();}
  void OnDestroy(){Paused=false;Time.timeScale=1;AudioListener.pause=false;Cursor.lockState=CursorLockMode.None;Cursor.visible=true;}
  string T(string key)=>Localizer.Text(key);
  void Row(string name,string value,System.Action click){GUILayout.BeginHorizontal();GUILayout.Label(T(name),GUILayout.Width(270));if(GUILayout.Button(value))click();GUILayout.EndHorizontal();}

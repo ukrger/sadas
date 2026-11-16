@@ -8,6 +8,7 @@ public sealed class FirstPersonMotor:MonoBehaviour {
  public Camera view; public TrainMotor train; public float walkSpeed=4,sensitivity=0.12f;
  CharacterController controller; Transform support; Vector3 supportPoint; Quaternion supportRotation;
  Vector3 inheritedVelocity; float pitch,vertical,nextFootstep;
+ int ignoreLookUntil=-1;public void SuppressLook(){ignoreLookUntil=Time.frameCount+1;}
  public float LookPitch=>pitch;
  public bool Locked=>Cursor.lockState==CursorLockMode.Locked;
  void Awake(){controller=GetComponent<CharacterController>();Lock(true);}
@@ -31,7 +32,7 @@ public sealed class FirstPersonMotor:MonoBehaviour {
    if(jump){inheritedVelocity=Vector3.ProjectOnPlane(platformVelocity,Vector3.up);support=null;}
    else controller.Move(carry);
   }
-  if(Locked){
+  if(Locked && Time.frameCount>ignoreLookUntil){
    Vector2 look=m.delta.ReadValue()*sensitivity;transform.Rotate(0,look.x,0);
    pitch=Mathf.Clamp(pitch-look.y,-80,80);view.transform.localRotation=Quaternion.Euler(pitch,0,0);
   }
@@ -58,7 +59,7 @@ public sealed class FirstPersonMotor:MonoBehaviour {
   if(controller.isGrounded && move.sqrMagnitude>.2f && Time.time>=nextFootstep){NoiseBus.Emit(transform.position,6);nextFootstep=Time.time+.5f;}
   if(transform.position.y< -15)Respawn();
  }
- public void RestorePose(Vector3 position,Quaternion rotation,float lookPitch=0){controller.enabled=false;transform.SetPositionAndRotation(position,rotation);controller.enabled=true;vertical=0;support=null;inheritedVelocity=Vector3.zero;pitch=Mathf.Clamp(lookPitch,-80,80);view.transform.localRotation=Quaternion.Euler(pitch,0,0);}
+ public void RestorePose(Vector3 position,Quaternion rotation,float lookPitch=0){SuppressLook();controller.enabled=false;transform.SetPositionAndRotation(position,rotation);controller.enabled=true;vertical=0;support=null;inheritedVelocity=Vector3.zero;pitch=Mathf.Clamp(lookPitch,-80,80);view.transform.localRotation=Quaternion.Euler(pitch,0,0);}
  void Respawn(){controller.enabled=false;transform.position=train.transform.TransformPoint(new Vector3(0,1.4f,-2));transform.rotation=train.transform.rotation;controller.enabled=true;vertical=0;inheritedVelocity=Vector3.zero;support=null;}
 }
 }

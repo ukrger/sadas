@@ -8,7 +8,7 @@ public sealed class RepairBench:MonoBehaviour,IInteractable {
  }
  public string Interact(TrainMotor train,ResourceInventory inventory,bool english){
   if(maintenance==null || train!=maintenance.train)return english?"Workbench unavailable.":"Верстак недоступен.";
-  switch(maintenance.TryRepair(inventory)){
+  switch(inventory!=null && inventory.RepairKits>0?maintenance.TryUseKit(inventory):maintenance.TryRepair(inventory)){
    case RepairResult.Repaired:return english?"Train repaired.":"Поезд отремонтирован.";
    case RepairResult.Moving:return english?"Stop the train before repairing.":"Для ремонта останови поезд.";
    case RepairResult.AlreadyHealthy:return english?"No repair needed.":"Ремонт не требуется.";

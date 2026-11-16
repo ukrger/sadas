@@ -18,6 +18,7 @@ public sealed class PersistentEntity:MonoBehaviour {
   var axe=GetComponent<AxePickup>();if(axe!=null)axe.RestoreCollected(!data.active);
   var pistol=GetComponent<PistolPickup>();if(pistol!=null)pistol.RestoreCollected(!data.active);
   var ammo=GetComponent<AmmoPickup>();if(ammo!=null)ammo.RestoreCollected(!data.active);
+  var supply=GetComponent<SurvivalPickup>();if(supply!=null)supply.RestoreCollected(!data.active);
   gameObject.SetActive(data.active);
  }
 }

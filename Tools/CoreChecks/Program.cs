@@ -28,6 +28,25 @@ class Program {
    bag.StackLimit=2;Check(!bag.TryAdd(3,0) && bag.MetalParts==1,"capacity failure is atomic");
    var invalidWeapon=new InventoryState{weapon=2,pistol=false};Check(!bag.IsValid(invalidWeapon),"unowned equipped weapon rejected");
    Check(bag.TryAddMedkit() && bag.TrySpendMedkit() && !bag.TrySpendMedkit(),"medkits consumed at most once");
+   var craft=new InventoryModel();craft.TryAdd(10,10);
+   Check(craft.TryCraft(CraftRecipe.RepairKit) && craft.MetalParts==7 && craft.Cloth==9 && craft.RepairKits==1,"repair kit recipe spends exact costs");
+   Check(craft.TryCraft(CraftRecipe.Medkit) && craft.MetalParts==6 && craft.Cloth==7 && craft.Medkits==1,"medkit recipe spends exact costs");
+   var insufficient=new InventoryModel();insufficient.TryAdd(5,0);Check(!insufficient.TryCraft(CraftRecipe.RepairKit) && insufficient.MetalParts==5,"craft failure leaves ingredients intact");
+   var full=new InventoryModel{StackLimit=10};full.TryAdd(10,10);full.TryAddSupply(SurvivalItem.RepairKit,10);Check(!full.TryCraft(CraftRecipe.RepairKit) && full.MetalParts==10 && full.Cloth==10,"full output stack does not spend ingredients");
+   Check(!craft.TryCraft((CraftRecipe)99) && craft.MetalParts==6,"unknown recipe rejected");
+   Check(craft.TryAddSupply(SurvivalItem.Water,2) && craft.TryUseSupply(SurvivalItem.Water) && craft.Water==1,"water pickup and consumption");
+   Check(!craft.TryAddSupply(SurvivalItem.Food,-1) && !craft.TryUseSupply(SurvivalItem.Food),"invalid or missing supplies cannot be consumed");
+   var supplies=craft.Capture();var suppliesCopy=new InventoryModel();suppliesCopy.Restore(supplies);Check(suppliesCopy.Water==craft.Water && suppliesCopy.RepairKits==craft.RepairKits,"new supplies survive inventory round trip");
+   var invalidSupplies=craft.Capture();invalidSupplies.food=-1;bool invalidRejected=false;try{craft.Restore(invalidSupplies);}catch(ArgumentException){invalidRejected=true;}Check(invalidRejected && craft.Food==0,"negative food restore rejected");
+   var needs=new NeedsModel();needs.Restore(90,85);Check(needs.Drink() && needs.Thirst==100 && !needs.Drink(),"water saturates meter without overfilling");
+   Check(needs.Eat() && needs.Hunger==100 && !needs.Eat(),"food saturates meter without overfilling");
+   float foodBefore=needs.Hunger;needs.Advance(0);Check(needs.Hunger==foodBefore && needs.Thirst==100,"pause does not drain needs");
+   needs.Restore(100,1);Check(Math.Abs(needs.Advance(10,0,.2f)-7.5f)<.0001f,"damage counts only time after a meter empties");
+   needs.Restore(0,0);Check(needs.Advance(10,0,0)==15,"two empty meters do not double damage");
+   bool invalidNeeds=false;try{needs.Restore(float.NaN,50);}catch(ArgumentException){invalidNeeds=true;}Check(invalidNeeds && needs.Hunger==0 && needs.Thirst==0,"invalid needs restore is atomic");
+   var oneFrame=new NeedsModel();oneFrame.Restore(1,1);double totalDamage=0;var manyFrames=new NeedsModel();manyFrames.Restore(1,1);
+   for(int i=0;i<1000;i++)totalDamage+=manyFrames.Advance(.1f,.025f,.045f);
+   float oneDamage=oneFrame.Advance(100,.025f,.045f);Check(Math.Abs(totalDamage-oneDamage)<.001,"needs depletion is independent of frame subdivision");
    Console.WriteLine(checks+" standalone .NET core checks passed. These are not Unity tests.");
   }finally{Directory.Delete(root,true);}
  }

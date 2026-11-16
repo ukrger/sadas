@@ -19,7 +19,7 @@ namespace TrainSummer {
   if(Time.time>=nextAuto || lastStop!=train.StopIndex){Save(true);nextAuto=Time.time+120;lastStop=train.StopIndex;}
  }
  SaveData Capture(){
-  var data=new SaveData{routeId=Profile,distance=train.Distance,fuel=train.Fuel,condition=train.maintenance.Condition,speed=train.Speed,stopIndex=train.StopIndex,parked=train.Parked,brake=train.Brake,aboard=train.PlayerAboard,health=player.vitals.Health,timeOfDay=clock.timeOfDay,lookPitch=player.LookPitch,flashlight=player.GetComponent<PlayerFlashlight>().lamp.enabled,inventory=inventory.Capture(),world=new WorldState[entities.Length]};
+  var data=new SaveData{routeId=Profile,distance=train.Distance,fuel=train.Fuel,condition=train.maintenance.Condition,speed=train.Speed,stopIndex=train.StopIndex,parked=train.Parked,brake=train.Brake,aboard=train.PlayerAboard,health=player.vitals.Health,timeOfDay=clock.timeOfDay,hunger=player.GetComponent<PlayerNeeds>().Hunger,thirst=player.GetComponent<PlayerNeeds>().Thirst,lookPitch=player.LookPitch,flashlight=player.GetComponent<PlayerFlashlight>().lamp.enabled,inventory=inventory.Capture(),world=new WorldState[entities.Length]};
   data.playerPosition=data.aboard?train.transform.InverseTransformPoint(player.transform.position):player.transform.position;
   data.playerEuler=(data.aboard?Quaternion.Inverse(train.transform.rotation)*player.transform.rotation:player.transform.rotation).eulerAngles;
   for(int i=0;i<entities.Length;i++)data.world[i]=entities[i].Capture();return data;
@@ -42,14 +42,14 @@ namespace TrainSummer {
  }
  SaveData ReadValidated(string path){
   var envelope=JsonUtility.FromJson<SaveEnvelope>(File.ReadAllText(path));
-  if(envelope==null || envelope.schema!=1 || string.IsNullOrEmpty(envelope.payload) || envelope.sha256!=AtomicFileStore.Hash(envelope.payload))throw new InvalidDataException("Save checksum/schema mismatch");
-  var data=JsonUtility.FromJson<SaveData>(envelope.payload);if(!Validate(data))throw new InvalidDataException("Save validation failed");return data;
+  if(envelope==null || (envelope.schema!=1 && envelope.schema!=2) || string.IsNullOrEmpty(envelope.payload) || envelope.sha256!=AtomicFileStore.Hash(envelope.payload))throw new InvalidDataException("Save checksum/schema mismatch");
+  var data=JsonUtility.FromJson<SaveData>(envelope.payload);if(!SaveMigration.Upgrade(data,initial.world) || !Validate(data))throw new InvalidDataException("Save validation failed");return data;
  }
  bool Finite(Vector3 v)=>AtomicFileStore.Range(v.x,-100000,100000) && AtomicFileStore.Range(v.y,-100000,100000) && AtomicFileStore.Range(v.z,-100000,100000);
  bool Validate(SaveData d){
-  if(d==null || d.schema!=1 || d.routeId!=Profile || d.inventory==null || d.world==null || d.world.Length!=entities.Length)return false;
+  if(d==null || d.schema!=2 || d.routeId!=Profile || d.inventory==null || d.world==null || d.world.Length!=entities.Length)return false;
   if(!AtomicFileStore.Range(d.distance,0,train.route.Length) || !AtomicFileStore.Range(d.fuel,0,100000) || !AtomicFileStore.Range(d.condition,0,100) || !AtomicFileStore.Range(d.health,0,player.vitals.maxHealth) || !AtomicFileStore.Range(d.speed,0,train.cruiseSpeed+.01f) || !AtomicFileStore.Range(d.timeOfDay,0,1))return false;
-  if(!AtomicFileStore.Range(d.lookPitch,-80,80))return false;
+  if(!AtomicFileStore.Range(d.lookPitch,-80,80) || !AtomicFileStore.Range(d.hunger,0,100) || !AtomicFileStore.Range(d.thirst,0,100))return false;
   if(d.stopIndex<0 || d.stopIndex>train.stops.Length || !Finite(d.playerPosition) || !Finite(d.playerEuler))return false;
   float next=d.stopIndex<train.stops.Length?Mathf.Min(train.stops[d.stopIndex],train.route.Length):train.route.Length;
   if(d.stopIndex>0 && d.distance<train.stops[d.stopIndex-1]-.02f)return false;
@@ -68,10 +68,11 @@ namespace TrainSummer {
  }
  void Apply(SaveData data){
   // Every field and entity ID has been checked before mutating the live scene.
-  train.Restore(data);train.maintenance.RestoreCondition(data.condition);inventory.Restore(data.inventory);player.vitals.RestoreHealth(data.health);clock.timeOfDay=data.timeOfDay;
+  player.GetComponent<PrototypeUI>().CloseInventory();
+  train.Restore(data);train.maintenance.RestoreCondition(data.condition);inventory.Restore(data.inventory);player.vitals.RestoreHealth(data.health);clock.timeOfDay=data.timeOfDay;player.GetComponent<PlayerNeeds>().Restore(data.hunger,data.thirst);
   foreach(var world in data.world)byId[world.id].Restore(world);
   Vector3 position=data.aboard?train.transform.TransformPoint(data.playerPosition):data.playerPosition;
-  Quaternion rotation=data.aboard?train.transform.rotation*Quaternion.Euler(data.playerEuler):Quaternion.Euler(data.playerEuler);player.RestorePose(position,rotation,data.lookPitch);player.GetComponent<PlayerFlashlight>().lamp.enabled=data.flashlight;player.GetComponent<PrototypeUI>().CloseInventory();
+  Quaternion rotation=data.aboard?train.transform.rotation*Quaternion.Euler(data.playerEuler):Quaternion.Euler(data.playerEuler);player.RestorePose(position,rotation,data.lookPitch);player.GetComponent<PlayerFlashlight>().lamp.enabled=data.flashlight;
   var melee=player.GetComponent<PlayerMelee>();if(melee!=null)melee.Cancel();var pistol=player.GetComponent<PlayerPistol>();if(pistol!=null)pistol.Cancel();
   foreach(var pool in FindObjectsOfType<BallisticProjectiles>())pool.Clear();Physics.SyncTransforms();lastStop=train.StopIndex;nextAuto=Time.time+120;
  }

@@ -64,6 +64,7 @@ public static class CombatSetup {
   var sources=new List<NavMeshBuildSource>();
   sources.Add(new NavMeshBuildSource{shape=NavMeshBuildSourceShape.Box,size=new Vector3(90,.2f,90),transform=station.localToWorldMatrix*Matrix4x4.Translate(Vector3.down*.1f),area=0});
   foreach(var box in station.GetComponentsInChildren<BoxCollider>()){
+   if(box.GetComponentInParent<SurvivalPickup>()!=null || box.GetComponentInParent<AmmoPickup>()!=null || box.GetComponentInParent<MedkitPickup>()!=null || box.GetComponentInParent<FuelPickup>()!=null)continue;
    if(box.GetComponentInParent<BreakableWood>()!=null){
     var obstacle=box.gameObject.AddComponent<NavMeshObstacle>();obstacle.shape=NavMeshObstacleShape.Box;obstacle.center=box.center;obstacle.size=box.size;obstacle.carving=true;obstacle.carveOnlyStationary=false;continue;
    }

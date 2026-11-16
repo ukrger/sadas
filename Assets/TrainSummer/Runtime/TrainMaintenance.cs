@@ -10,6 +10,12 @@ public sealed class TrainMaintenance:MonoBehaviour {
  void Awake(){Condition=Mathf.Clamp(startingCondition,0,100);}
  public void RestoreCondition(float value){Condition=Mathf.Clamp(value,0,100);}
  public void ApplyWear(float distance){if(distance>0)Condition=Mathf.Max(0,Condition-distance*Mathf.Max(0,wearPerMeter));}
+ public RepairResult TryUseKit(ResourceInventory inventory){
+  if(train==null || inventory==null)return RepairResult.InvalidConfiguration;
+  if(train.Speed>.1f)return RepairResult.Moving;if(Condition>=100)return RepairResult.AlreadyHealthy;
+  if(!inventory.TryUseSupply(SurvivalItem.RepairKit))return RepairResult.MissingResources;
+  Condition=Mathf.Min(100,Condition+25);return RepairResult.Repaired;
+ }
  public RepairResult TryRepair(ResourceInventory inventory){
   if(train==null || inventory==null || repairAmount<=0 || partsPerRepair<0 || clothPerRepair<0 || partsPerRepair+clothPerRepair<=0)return RepairResult.InvalidConfiguration;
   if(train.Speed>.1f)return RepairResult.Moving;

@@ -31,6 +31,7 @@ public static class StationSetup {
   Box(house,"Table",new Vector3(1.6f,1.05f,.8f),new Vector3(1.6f,.12f,.8f),wood,detailed);
   SurvivalPropsSetup.AddCrate(house,wood);
   ExpeditionSetup.AddStationProps(house,wood);
+  InventorySetup.Station(house,wood);
   Box(house,"Fuel can",new Vector3(1.6f,1.46f,.8f),new Vector3(.5f,.7f,.35f),fuel,false).AddComponent<FuelPickup>().amount=fuelAmount;
  }
  static GameObject Box(Transform parent,string name,Vector3 pos,Vector3 size,Material mat,bool invisible){

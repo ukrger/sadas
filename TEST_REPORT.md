@@ -1,15 +1,17 @@
-# Validation — prototype 0.6
+# Validation — prototype 0.7
 
 ## Executed
-- **20 core checks compiled and executed with C# Roslyn / .NET 8.** Sources under test are the actual AtomicFileStore and InventoryModel used by the game, plus InventoryState and WeaponSlot. Checks cover UTF-8 writes, repeated replacement and backups, temporary-file cleanup, SHA-256 known vector, finite/range checks, resource transactions, negative values, weapon ownership, magazine exhaustion, reload conservation, inventory round trip, rejection without partial mutation, capacity and medkits.
-- **Blender 4.3.2:** all three new generators ran and exported FBX/BLEND. FBX was reimported; LOD mesh counts/triangles and unit markers checked. Mutant skin bindings, 11 bones and exported Idle/Walk actions checked.
-- C# syntax parsed with tree-sitter (53 source files including the standalone check program). This is not Unity API compilation.
-- Menu dictionaries checked for matching keys and valid JSON. Assembly-definition JSON checked.
-- ZIP integrity and published download hashes checked during packaging.
+- **36 checks compiled and executed with C# Roslyn / .NET 8.** Actual production sources: AtomicFileStore, InventoryModel, NeedsModel, InventoryState, WeaponSlot, CraftingRules. Checks cover atomic writes/backups/checksums, resource/ammo transactions, capacity, restore validation, both crafting recipes, failed crafts without spending, new supplies, needs restoration, pause, saturation, starvation timing and frame subdivision.
+- **Blender 4.3.2:** water bottle, canned food and repair kit generated/exported and reimported from FBX. Checked LOD mesh/triangle counts, unit markers, height and upper surfaces. Inventory layout rendered from exported models as an illustrative Blender preview.
+- All 63 C# source files syntax-parsed with tree-sitter. This does not compile Unity APIs.
+- URP 14 source inspected for camera depth and shadow-resolution APIs. Removed assignment to read-only clearDepth; replaced the inaccessible runtime shadow-resolution setter with Editor-generated pipeline presets and runtime copies.
+- Menu dictionaries and assembly-definition JSON validated. Package integrity/download hashes checked when publishing.
 
 ## Provided, not executed here
-- Unity EditMode tests for route, stops, repairs, healing, resources, ownership, restored crate/inventory state, reload and localization catalogs.
-- Unity PlayMode tests for wall occlusion of bullet damage and projectile suspension during pause.
+- Unity EditMode tests from prior versions, plus crafting, repair-kit use and schema-1 migration preservation/rejection cases.
+- Existing Unity PlayMode projectile/pause tests.
 
 ## Not verified
-Unity is not installed in this environment. No Unity compilation, Editor scene generation, NavMesh build, AI/animation/audio integration, settings on actual graphics hardware, complete session round trip, Windows build or performance measurement was possible. Standalone core checks and Blender renders do not establish those behaviors. In particular, verify the Generic animation/avatar import and the carving of destroyed door barriers in Unity 2022.3 before expanding content.
+Unity is absent. No Unity compilation, scene generation, camera-stack execution, pointer picking, train/platform interaction, runtime migration, complete save round trip, AI/animation/audio integration, Windows build or FPS measurement was possible. In particular, verify Forward renderer camera stacking, cursor handling across pause/resume, save/load while inventory is open, and migration of a real 0.6 save before relying on the feature.
+
+InventoryClothLayout.png is a Blender assembly preview, not an in-game screenshot. The current physical inventory uses fixed category slots and actual meshes; drag-and-drop, hands and cloth physics are not implemented.

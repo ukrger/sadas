@@ -9,10 +9,11 @@ namespace TrainSummer {
  void Start(){idle=pivot.localPosition;idleRotation=pivot.localRotation;}
  public void Cancel(){reloading=false;recoil=0;}
  void Update(){
-  bool active=inventory.HasPistol && inventory.SelectedWeapon==WeaponSlot.Pistol && player.vitals.Alive;
+  if(GameMenu.Paused)return;
+  bool active=!ui.InventoryOpen && inventory.HasPistol && inventory.SelectedWeapon==WeaponSlot.Pistol && player.vitals.Alive;
   pivot.gameObject.SetActive(active);
   bool allowed=active && player.Locked && !ui.InventoryOpen;
-  if(!allowed){reloading=false;return;}
+  if(!allowed){Cancel();return;}
   var k=Keyboard.current;var m=Mouse.current;
   if(k!=null && k.rKey.wasPressedThisFrame && inventory.Magazine<12 && inventory.Ammo>0 && !reloading){reloading=true;reloadEnd=Time.time+reloadSeconds;}
   if(reloading && Time.time>=reloadEnd){inventory.Reload();reloading=false;}

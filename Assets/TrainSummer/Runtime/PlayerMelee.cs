@@ -11,10 +11,11 @@ public sealed class PlayerMelee:MonoBehaviour {
  Vector3 idlePosition;Quaternion idleRotation;
  void Start(){if(weaponPivot!=null){idlePosition=weaponPivot.localPosition;idleRotation=weaponPivot.localRotation;}}
  void Update(){
+  if(GameMenu.Paused)return;
   if(weaponPivot==null || inventory==null || player==null)return;
   var mouse=Mouse.current;
   bool allowed=player.Locked && (ui==null || !ui.InventoryOpen) && (vitals==null || vitals.Alive);
-  bool visible=inventory.SelectedWeapon==WeaponSlot.Axe && inventory.HasAxe && (vitals==null || vitals.Alive);weaponPivot.gameObject.SetActive(visible);
+  bool visible=(ui==null || !ui.InventoryOpen) && inventory.SelectedWeapon==WeaponSlot.Axe && inventory.HasAxe && (vitals==null || vitals.Alive);weaponPivot.gameObject.SetActive(visible);
   if(!visible || !allowed){swinging=false;ResetPose();return;}
   if(mouse!=null && mouse.leftButton.wasPressedThisFrame && !swinging && Time.time>=nextSwing){
    swinging=true;hitResolved=false;startedAt=Time.time;nextSwing=Time.time+Mathf.Max(cooldown,swingDuration);
