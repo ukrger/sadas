@@ -10,3 +10,5 @@ Builds/
 bin/
 obj/
 *.blend1
+
+!Tools/CoreChecks/CoreChecks.csproj
