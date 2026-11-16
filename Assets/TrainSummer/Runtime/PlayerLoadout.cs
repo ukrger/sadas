@@ -6,6 +6,8 @@ namespace TrainSummer {
  void Update(){if(!player.Locked || ui.InventoryOpen || !player.vitals.Alive)return;var k=Keyboard.current;if(k==null)return;
   if(k.digit1Key.wasPressedThisFrame)inventory.Equip(WeaponSlot.Axe);
   if(k.digit2Key.wasPressedThisFrame)inventory.Equip(WeaponSlot.Pistol);
+  if(k.digit3Key.wasPressedThisFrame)inventory.Equip(WeaponSlot.Shotgun);
+  if(k.digit4Key.wasPressedThisFrame)inventory.Equip(WeaponSlot.Rifle);
  }
 }
 }

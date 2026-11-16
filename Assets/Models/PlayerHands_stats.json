@@ -1,0 +1,14 @@
+{
+  "LOD0": {
+    "meshes": 6,
+    "triangles": 1672
+  },
+  "LOD1": {
+    "meshes": 4,
+    "triangles": 376
+  },
+  "LOD2": {
+    "meshes": 4,
+    "triangles": 112
+  }
+}

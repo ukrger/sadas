@@ -126,7 +126,7 @@
     },
     {
       "key": "keys",
-      "value": "Esc pause; F5 save; F9 load; F flashlight; 1/2 weapons; R reload."
+      "value": "Esc pause; F5/F9 save/load; F flashlight; 1/2/3/4 weapons; RMB aim; R reload."
     },
     {
       "key": "full",

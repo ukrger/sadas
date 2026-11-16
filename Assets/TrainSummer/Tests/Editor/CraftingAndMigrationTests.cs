@@ -9,7 +9,7 @@ public sealed class CraftingAndMigrationTests {
   var old=new WorldState{id="Station 1/Crate",active=true,looted=true};
   var initial=new[]{new WorldState{id="Station 1/Crate",active=true,looted=false},new WorldState{id="Station 1/Supply WaterBottle",active=true}};
   var data=new SaveData{schema=1,inventory=new InventoryState{parts=7},world=new[]{old}};
-  Assert.IsTrue(SaveMigration.Upgrade(data,initial));Assert.AreEqual(2,data.schema);Assert.AreEqual(100,data.hunger);Assert.AreEqual(100,data.thirst);Assert.AreEqual(7,data.inventory.parts);Assert.IsTrue(data.world[0].looted);Assert.IsTrue(data.world[1].active);
+  Assert.IsTrue(SaveMigration.Upgrade(data,initial));Assert.AreEqual(3,data.schema);Assert.AreEqual(100,data.hunger);Assert.AreEqual(100,data.thirst);Assert.AreEqual(7,data.inventory.parts);Assert.IsTrue(data.world[0].looted);Assert.IsTrue(data.world[1].active);
  }
  [Test]public void LegacySaveMissingAnOldEntityIsRejected(){
   var data=new SaveData{schema=1,inventory=new InventoryState(),world=new WorldState[0]};

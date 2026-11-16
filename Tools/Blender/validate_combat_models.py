@@ -3,7 +3,7 @@ import bpy,json,argparse,sys
 from pathlib import Path
 p=argparse.ArgumentParser();p.add_argument('--project',required=True);a=p.parse_args(sys.argv[sys.argv.index('--')+1:] if '--' in sys.argv else [])
 base=Path(a.project).resolve()/'Assets/Models'
-for name in ['ServicePistol','AmmoBox','ForestMutant']:
+for name in ['ServicePistol','AmmoBox','ForestMutant','StationZombie']:
  bpy.ops.object.select_all(action='SELECT');bpy.ops.object.delete(use_global=False)
  # Import just one asset, and ignore orphaned actions from previous imports.
  previous=set(bpy.data.actions);bpy.ops.import_scene.fbx(filepath=str(base/(name+'.fbx')))
@@ -16,7 +16,7 @@ for name in ['ServicePistol','AmmoBox','ForestMutant']:
   meshes=[o for o in objects if o.type=='MESH' and o.name.startswith('LOD'+str(level)+'_')];triangles=sum(sum(len(f.vertices)-2 for f in o.data.polygons) for o in meshes)
   assert len(meshes)==expected['LOD'+str(level)]['meshes'];assert triangles==expected['LOD'+str(level)]['triangles'];counts.append(triangles)
  assert counts[0]>counts[1]>counts[2]
- if name=='ForestMutant':
+ if name in ['ForestMutant','StationZombie']:
   rigs=[o for o in objects if o.type=='ARMATURE'];assert len(rigs)==1 and len(rigs[0].data.bones)>=11
   assert len([action for action in bpy.data.actions if action not in previous])>=2,'Missing baked idle/walk actions'
   for obj in objects:

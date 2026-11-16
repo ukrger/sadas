@@ -2,7 +2,7 @@ using UnityEngine;
 namespace TrainSummer {
 [DefaultExecutionOrder(-100)]
 public sealed class TrainMotor:MonoBehaviour {
- public RoutePath route;public TrainMaintenance maintenance;
+ public RoutePath route;public TrainMaintenance maintenance;public ExpeditionSession expedition;
  public float cruiseSpeed=8,acceleration=1.5f,startingFuel=30;
  public float[] stops={160,640,1200,1800};
  public float Speed {get;private set;}
@@ -24,7 +24,7 @@ public sealed class TrainMotor:MonoBehaviour {
  }
  public void AddFuel(float value){Fuel+=Mathf.Max(0,value);}
  public bool Depart(){
-  if(!PlayerAboard || Fuel<=0 || Finished || (maintenance!=null && maintenance.Broken))return false;
+  if((Parked && expedition!=null && !expedition.CanLeave) || !PlayerAboard || Fuel<=0 || Finished || (maintenance!=null && maintenance.Broken))return false;
   if(Parked)StopIndex++;Parked=false;brake=false;return true;
  }
  public void ToggleBrake(){if(Parked)Depart();else brake=!brake;}

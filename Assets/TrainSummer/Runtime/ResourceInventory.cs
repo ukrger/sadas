@@ -3,6 +3,12 @@ namespace TrainSummer {
 public sealed class ResourceInventory:MonoBehaviour {
  public int stackLimit=999;readonly InventoryModel model=new InventoryModel();
  public int MetalParts=>model.MetalParts;public int Cloth=>model.Cloth;public int Medkits=>model.Medkits;public int Ammo=>model.Ammo;public int Magazine=>model.Magazine;
+ public bool HasRifle=>model.HasRifle;public int RifleAmmo=>model.RifleAmmo;public int RifleMagazine=>model.RifleMagazine;
+ public bool TryTakeRifle()=>model.TryTakeRifle();public bool TrySpendRifleRound()=>model.TrySpendRifleRound();public int ReloadRifle()=>model.ReloadRifle();
+ public bool TryAddRifleAmmo(int amount){Sync();return model.TryAddRifleAmmo(amount);}
+ public bool HasShotgun=>model.HasShotgun;public int Shells=>model.Shells;public int Tube=>model.Tube;
+ public bool TryTakeShotgun()=>model.TryTakeShotgun();public bool TrySpendShell()=>model.TrySpendShell();public bool ReloadShell()=>model.ReloadShell();
+ public bool TryAddShells(int amount){Sync();return model.TryAddShells(amount);}
  public int Water=>model.Water;public int Food=>model.Food;public int RepairKits=>model.RepairKits;
  public bool HasAxe=>model.HasAxe;public bool HasPistol=>model.HasPistol;public WeaponSlot SelectedWeapon=>model.SelectedWeapon;
  void Sync(){model.StackLimit=stackLimit;}

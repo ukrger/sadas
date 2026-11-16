@@ -53,6 +53,19 @@ public static class ModelSetup {
    case "SupplyLabel":color=new Color(.68f,.70f,.54f);metallic=0;break;
    case "SupplyCan":color=new Color(.42f,.32f,.15f);metallic=.25f;break;
    case "SupplyKit":color=new Color(.38f,.29f,.10f);metallic=.2f;break;
+   case "SignalPaint":color=new Color(.18f,.22f,.17f);metallic=.4f;break;
+   case "SignalRed":color=new Color(.48f,.025f,.015f);metallic=.1f;break;
+   case "SignalGreen":color=new Color(.025f,.45f,.11f);metallic=.1f;break;
+   case "RifleWood":color=new Color(.29f,.14f,.045f);metallic=0;break;
+   case "ZombieSkin":color=new Color(.39f,.38f,.28f);metallic=0;break;
+   case "ZombieCloth":color=new Color(.17f,.22f,.26f);metallic=0;break;
+   case "ZombieDark":color=new Color(.065f,.06f,.045f);metallic=0;break;
+   case "ShotgunWood":color=new Color(.26f,.12f,.045f);metallic=0;break;
+   case "RadioPaint":color=new Color(.22f,.29f,.15f);metallic=.3f;break;
+   case "RadioDark":color=new Color(.035f,.045f,.035f);metallic=.1f;break;
+   case "HandRightSleeve":case "HandLeftSleeve":color=new Color(.20f,.25f,.13f);metallic=0;break;
+   case "HandRightGlove":case "HandLeftGlove":color=new Color(.16f,.10f,.055f);metallic=0;break;
+   case "HandRightStitch":case "HandLeftStitch":color=new Color(.38f,.31f,.19f);metallic=0;break;
    case "GunSteel":color=new Color(.12f,.14f,.15f);metallic=.8f;break;
    case "GunGrip":color=new Color(.12f,.095f,.065f);metallic=0;break;
    case "AmmoCard":color=new Color(.39f,.29f,.15f);metallic=0;break;
@@ -83,9 +96,10 @@ public static class ModelSetup {
    case "HouseStone":color=new Color(.34f,.33f,.29f);metallic=0;break;
    case "HouseTrim":color=new Color(.43f,.37f,.24f);metallic=0;break;
   }
+  if(key=="SignalRed" || key=="SignalGreen"){material.EnableKeyword("_EMISSION");material.SetColor("_EmissionColor",color*.1f);}
   material.color=color;if(material.HasProperty("_Metallic"))material.SetFloat("_Metallic",metallic);material.SetFloat("_Smoothness",key.StartsWith("Env")?.08f:(key.StartsWith("House")?.18f:.35f));material.enableInstancing=true;
   if(foliage){material.SetFloat("_WindAmplitude",key=="EnvIvy"?.025f:(key=="EnvGrass"?.045f:.10f));material.SetFloat("_WindSpeed",.8f);material.SetFloat("_TreeHeight",key=="EnvLeafPine"?11:(key=="EnvGrass"?.6f:(key=="EnvIvy"?4:9)));}
-  EditorUtility.SetDirty(material);return material;
+  SurfaceBaker.Apply(material,key);EditorUtility.SetDirty(material);return material;
  }
 }
 }

@@ -25,10 +25,10 @@ namespace TrainSummer {
   if(!GameMenu.Paused){Cursor.lockState=value?CursorLockMode.None:CursorLockMode.Locked;Cursor.visible=value;}
  }
  int Count(BagSlotKind kind){switch(kind){
-  case BagSlotKind.Parts:return inventory.MetalParts;case BagSlotKind.Cloth:return inventory.Cloth;case BagSlotKind.Water:return inventory.Water;case BagSlotKind.Food:return inventory.Food;
+  case BagSlotKind.Rifle:return inventory.HasRifle?1:0;case BagSlotKind.RifleAmmo:return inventory.RifleAmmo;case BagSlotKind.Shotgun:return inventory.HasShotgun?1:0;case BagSlotKind.Shells:return inventory.Shells;case BagSlotKind.Parts:return inventory.MetalParts;case BagSlotKind.Cloth:return inventory.Cloth;case BagSlotKind.Water:return inventory.Water;case BagSlotKind.Food:return inventory.Food;
   case BagSlotKind.Medkit:return inventory.Medkits;case BagSlotKind.RepairKit:return inventory.RepairKits;case BagSlotKind.Ammo:return inventory.Ammo;case BagSlotKind.Axe:return inventory.HasAxe?1:0;case BagSlotKind.Pistol:return inventory.HasPistol?1:0;default:return 0;}}
  string Name(BagSlotKind kind){switch(kind){
-  case BagSlotKind.Parts:return T("Детали","Parts");case BagSlotKind.Cloth:return T("Ткань","Cloth");case BagSlotKind.Water:return T("Вода","Water");case BagSlotKind.Food:return T("Консервы","Food");
+  case BagSlotKind.Rifle:return T("Автомат","Rifle");case BagSlotKind.RifleAmmo:return T("Патроны автомата","Rifle ammo");case BagSlotKind.Shotgun:return T("Дробовик","Shotgun");case BagSlotKind.Shells:return T("Дробь","Shells");case BagSlotKind.Parts:return T("Детали","Parts");case BagSlotKind.Cloth:return T("Ткань","Cloth");case BagSlotKind.Water:return T("Вода","Water");case BagSlotKind.Food:return T("Консервы","Food");
   case BagSlotKind.Medkit:return T("Аптечка","Medkit");case BagSlotKind.RepairKit:return T("Ремонтный набор","Repair kit");case BagSlotKind.Ammo:return T("Патроны","Ammo");case BagSlotKind.Axe:return T("Топор","Axe");default:return T("Пистолет","Pistol");}}
  void Refresh(){foreach(var slot in slots)slot.gameObject.SetActive(Count(slot.kind)>0);}
  Rect Panel=>new Rect(Mathf.Max(8,Screen.width/2-360),Screen.height-178,Mathf.Min(720,Screen.width-16),165);
@@ -54,6 +54,8 @@ namespace TrainSummer {
    case BagSlotKind.Food:success=inventory.TryEat(needs);break;
    case BagSlotKind.Medkit:success=inventory.TryHeal(player.vitals);break;
    case BagSlotKind.Axe:if(inventory.SelectedWeapon!=WeaponSlot.Axe)inventory.Equip(WeaponSlot.Axe);message=T("Топор выбран. Закрой рюкзак.","Axe selected. Close the backpack.");return;
+   case BagSlotKind.Rifle:if(inventory.SelectedWeapon!=WeaponSlot.Rifle)inventory.Equip(WeaponSlot.Rifle);message=T("Автомат выбран. Закрой рюкзак.","Rifle selected. Close the backpack.");return;
+   case BagSlotKind.Shotgun:if(inventory.SelectedWeapon!=WeaponSlot.Shotgun)inventory.Equip(WeaponSlot.Shotgun);message=T("Дробовик выбран. Закрой рюкзак.","Shotgun selected. Close the backpack.");return;
    case BagSlotKind.Pistol:if(inventory.SelectedWeapon!=WeaponSlot.Pistol)inventory.Equip(WeaponSlot.Pistol);message=T("Пистолет выбран. Закрой рюкзак.","Pistol selected. Close the backpack.");return;
    case BagSlotKind.RepairKit:
     if(!train.PlayerAboard){message=T("Для ремонта вернись в поезд.","Return to the train to repair it.");return;}

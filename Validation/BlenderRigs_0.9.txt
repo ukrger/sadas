@@ -1,0 +1,13 @@
+FBX version: 7400
+PASS ServicePistol LOD triangles [2760, 148, 64]
+FBX version: 7400
+PASS AmmoBox LOD triangles [1260, 204, 92]
+FBX version: 7400
+RIG PASS 11 bones; actions ['MutantRig|MutantRig|Idle', 'MutantRig|MutantRig|Walk']
+PASS ForestMutant LOD triangles [5184, 1572, 540]
+FBX version: 7400
+RIG PASS 11 bones; actions ['ZombieRig|ZombieRig|Idle', 'ZombieRig|ZombieRig|Walk']
+PASS StationZombie LOD triangles [5508, 1572, 540]
+Blender 4.3.2
+
+Blender quit

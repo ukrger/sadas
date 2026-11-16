@@ -40,9 +40,9 @@ class PropBuilder:
    if o.type=='MESH':hidden=o.parent.name!='LOD0';o.hide_render=hidden;o.hide_set(hidden)
   source=self.project/'Tools/Blender/Source';source.mkdir(parents=True,exist_ok=True);bpy.ops.wm.save_as_mainfile(filepath=str(source/(self.name+'.blend')))
   (out/(self.name+'_stats.json')).write_text(json.dumps(self.stats,indent=2));print('MODEL_STATS',self.name,self.stats)
- def render(self,target,ortho,camera=(3,4,2.8)):
+ def render(self,target,ortho,camera=(3,4,2.8),floor=0):
   def aim(o,p):o.rotation_euler=(Vector(p)-o.location).to_track_quat('-Z','Y').to_euler()
-  bpy.ops.mesh.primitive_plane_add(size=100);m=bpy.data.materials.new('Studio');m.diffuse_color=(.13,.15,.13,1);bpy.context.object.data.materials.append(m)
+  bpy.ops.mesh.primitive_plane_add(size=100,location=(0,0,floor));m=bpy.data.materials.new('Studio');m.diffuse_color=(.13,.15,.13,1);bpy.context.object.data.materials.append(m)
   for loc,power,size in [((3,4,6),450,5),((-3,-2,4),350,4)]:
    bpy.ops.object.light_add(type='AREA',location=loc);o=bpy.context.object;o.data.energy=power;o.data.size=size;aim(o,(0,0,target))
   bpy.ops.object.camera_add(location=camera);cam=bpy.context.object;aim(cam,(0,0,target));cam.data.type='ORTHO';cam.data.ortho_scale=ortho

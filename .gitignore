@@ -12,3 +12,6 @@ obj/
 *.blend1
 
 !Tools/CoreChecks/CoreChecks.csproj
+
+__pycache__/
+*.pyc

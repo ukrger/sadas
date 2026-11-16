@@ -1,0 +1,15 @@
+FBX version: 7400
+PASS PumpShotgun LOD [2568, 356, 216] semantic extent 1.1675 unit orthogonal axes and materials
+FBX version: 7400
+PASS PlayerHands LOD [1672, 376, 112] semantic extent 0.936 unit orthogonal axes and materials
+FBX version: 7400
+PASS FieldRadio LOD [2364, 300, 216] semantic extent 0.815 unit orthogonal axes and materials
+FBX version: 7400
+PASS AutomaticRifle LOD [2904, 316, 252] semantic extent 1.138 unit orthogonal axes and materials
+FBX version: 7400
+PASS RailSignal LOD [1728, 272, 188] semantic extent 3.34 unit orthogonal axes and materials
+FBX version: 7400
+PASS FuelCan LOD [1032, 124, 76] semantic extent 0.6675 unit orthogonal axes and materials
+Blender 4.3.2
+
+Blender quit

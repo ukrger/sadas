@@ -8,7 +8,10 @@ public sealed class FirstPersonMotor:MonoBehaviour {
  public Camera view; public TrainMotor train; public float walkSpeed=4,sensitivity=0.12f;
  CharacterController controller; Transform support; Vector3 supportPoint; Quaternion supportRotation;
  Vector3 inheritedVelocity; float pitch,vertical,nextFootstep;
+ public bool InputReady=>Time.frameCount>ignoreLookUntil;
  int ignoreLookUntil=-1;public void SuppressLook(){ignoreLookUntil=Time.frameCount+1;}
+ public float LookMultiplier {get;set;}=1;public float MovementMultiplier {get;set;}=1;
+ public void AddRecoil(float upward,float sideways){pitch=Mathf.Clamp(pitch-Mathf.Max(0,upward),-80,80);transform.Rotate(0,sideways,0);view.transform.localRotation=Quaternion.Euler(pitch,0,0);}
  public float LookPitch=>pitch;
  public bool Locked=>Cursor.lockState==CursorLockMode.Locked;
  void Awake(){controller=GetComponent<CharacterController>();Lock(true);}
@@ -17,7 +20,7 @@ public sealed class FirstPersonMotor:MonoBehaviour {
  void Update(){
   var k=Keyboard.current;var m=Mouse.current;if(k==null||m==null)return;
   float dt=Time.deltaTime;if(dt<=0)return;
-  if(vitals!=null && !vitals.Alive){train.PlayerAboard=false;if(k.rKey.wasPressedThisFrame){Respawn();vitals.ResetAfterRespawn();}return;}
+  if(vitals!=null && !vitals.Alive){train.PlayerAboard=false;return;}
   // Train and pooled world transforms move before this controller.
   Physics.SyncTransforms();
   bool groundedBefore=controller.isGrounded;
@@ -33,7 +36,7 @@ public sealed class FirstPersonMotor:MonoBehaviour {
    else controller.Move(carry);
   }
   if(Locked && Time.frameCount>ignoreLookUntil){
-   Vector2 look=m.delta.ReadValue()*sensitivity;transform.Rotate(0,look.x,0);
+   Vector2 look=m.delta.ReadValue()*sensitivity*LookMultiplier;transform.Rotate(0,look.x,0);
    pitch=Mathf.Clamp(pitch-look.y,-80,80);view.transform.localRotation=Quaternion.Euler(pitch,0,0);
   }
   Vector2 move=Locked?new Vector2((k.dKey.isPressed?1:0)-(k.aKey.isPressed?1:0),(k.wKey.isPressed?1:0)-(k.sKey.isPressed?1:0)):Vector2.zero;
@@ -41,7 +44,7 @@ public sealed class FirstPersonMotor:MonoBehaviour {
   if(controller.isGrounded && vertical<0)vertical=-2;
   if(jump)vertical=5;
   vertical-=18*dt;
-  Vector3 velocity=(transform.right*move.x+transform.forward*move.y)*walkSpeed+Vector3.up*vertical;
+  Vector3 velocity=(transform.right*move.x+transform.forward*move.y)*walkSpeed*MovementMultiplier+Vector3.up*vertical;
   // Attached players get platform displacement once. In flight, preserve launch velocity.
   if(support==null)velocity+=inheritedVelocity;
   var flags=controller.Move(velocity*dt);

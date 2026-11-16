@@ -1,0 +1,96 @@
+ 
+PASS UTF-8 first write
+PASS replacement committed
+PASS previous save retained as backup
+PASS repeated atomic rotation
+PASS temporary file cleaned
+PASS SHA-256 known vector
+PASS changed payload has changed checksum
+PASS non-finite and invalid ranges rejected
+PASS range boundaries accepted
+PASS insufficient resources do not mutate state
+PASS repair resource transaction
+PASS negative transactions rejected
+PASS pistol ownership and initial magazine
+PASS reload conserves ammunition
+PASS empty magazine cannot fire
+PASS inventory snapshot round trip
+PASS invalid snapshot rejected without partial mutation
+PASS capacity failure is atomic
+PASS unowned equipped weapon rejected
+PASS medkits consumed at most once
+PASS repair kit recipe spends exact costs
+PASS medkit recipe spends exact costs
+PASS craft failure leaves ingredients intact
+PASS full output stack does not spend ingredients
+PASS unknown recipe rejected
+PASS water pickup and consumption
+PASS invalid or missing supplies cannot be consumed
+PASS new supplies survive inventory round trip
+PASS negative food restore rejected
+PASS water saturates meter without overfilling
+PASS food saturates meter without overfilling
+PASS pause does not drain needs
+PASS damage counts only time after a meter empties
+PASS two empty meters do not double damage
+PASS invalid needs restore is atomic
+PASS needs depletion is independent of frame subdivision
+PASS seven tiles around a boarding player
+PASS stranded player keeps nearby ground
+PASS overlapping windows do not duplicate tiles
+PASS tile window stays unique and bounded across teleports
+PASS tree layout is deterministic
+PASS tree trunks avoid station footprint
+PASS tree trunks avoid pooled ruins
+PASS vegetation leaves the track corridor clear
+PASS ruins avoid station stops
+PASS ruin doors face the route
+PASS unowned shotgun cannot fire or load
+PASS shotgun picked up once with five shells
+PASS shotgun reserve rejects negative amount
+PASS empty tube cannot create a shot
+PASS single-shell loading conserves ammunition
+PASS shotgun tube cannot overfill
+PASS shotgun snapshot round trip
+PASS unowned shotgun contents and equip rejected
+PASS station objectives reject invalid relays and gate departure
+PASS radio relay recovery is idempotent
+PASS first arrival arms full dwell period
+PASS travel does not consume station timer
+PASS pause does not consume station timer
+PASS expired timer permits safe departure
+PASS automatic departure waits for player fuel and repair
+PASS manual schedule disables automatic departure only
+PASS timer and mission flags survive restore
+PASS next station starts a new timer and requires its own relay
+PASS victory requires all four relays and route end
+PASS invalid schedule restore does not mutate mission
+PASS departed station cannot lose its required relay in a save
+PASS schedule independent of frame subdivision
+PASS schema one upgrades through supplies and mission without losing old loot
+PASS schema two keeps needs and collected supplies while adding shotgun loot
+PASS old departed stations credited and current dwell initialized
+PASS migration keeps pistol rounds without creating owned shotgun
+PASS old completed route receives a valid completed mission
+PASS migration refuses missing unrelated old entities before mutation
+PASS migration rejects duplicate old IDs
+PASS migration rejects unknown old IDs
+PASS schema three upgrade is idempotent and does not reset schedule
+PASS unowned rifle cannot fire or reload
+PASS rifle ownership and initial magazine
+PASS rifle reload conserves ammunition
+PASS empty rifle cannot fire
+PASS invalid rifle ammo and unowned equip rejected
+PASS rifle inventory snapshot round trip
+PASS aim enters smoothly rather than snapping
+PASS aim reduces spread sensitivity and movement
+PASS releasing aim smoothly returns to hip fire
+PASS reload or disallowed state prevents aim
+PASS weapon switch inventory load and pause reset aim
+PASS paused invalid and negative time cannot advance aim
+PASS aim transition is frame-subdivision independent
+PASS procedural PBR channels stay in valid ranges
+PASS procedural materials repeat at texture boundaries
+PASS procedural tangent normals are normalized and forward-facing
+93 standalone .NET core checks passed. These are not Unity tests.
+ 

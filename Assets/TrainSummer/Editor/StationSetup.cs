@@ -32,7 +32,7 @@ public static class StationSetup {
   SurvivalPropsSetup.AddCrate(house,wood);
   ExpeditionSetup.AddStationProps(house,wood);
   InventorySetup.Station(house,wood);
-  Box(house,"Fuel can",new Vector3(1.6f,1.46f,.8f),new Vector3(.5f,.7f,.35f),fuel,false).AddComponent<FuelPickup>().amount=fuelAmount;
+  CombatSetup.Prop("Fuel can","FuelCan",house,new Vector3(1.6f,1.12f,.8f),new Vector3(0,.34f,0),new Vector3(.36f,.69f,.18f),fuel).AddComponent<FuelPickup>().amount=fuelAmount;
  }
  static GameObject Box(Transform parent,string name,Vector3 pos,Vector3 size,Material mat,bool invisible){
   var obj=GameObject.CreatePrimitive(PrimitiveType.Cube);obj.name=name;obj.transform.SetParent(parent,false);obj.transform.localPosition=pos;obj.transform.localScale=size;var r=obj.GetComponent<MeshRenderer>();r.sharedMaterial=mat;r.enabled=!invisible;return obj;
