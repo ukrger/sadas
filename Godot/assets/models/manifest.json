@@ -1,0 +1,186 @@
+{
+  "AmmoBox": {
+    "bytes": 92852,
+    "lod_meshes": {
+      "0": 4,
+      "1": 4,
+      "2": 4
+    }
+  },
+  "AutomaticRifle": {
+    "bytes": 195628,
+    "lod_meshes": {
+      "0": 4,
+      "1": 3,
+      "2": 3
+    }
+  },
+  "CannedFood": {
+    "bytes": 71880,
+    "lod_meshes": {
+      "0": 3,
+      "1": 3,
+      "2": 3
+    }
+  },
+  "FieldBackpack": {
+    "bytes": 125504,
+    "lod_meshes": {
+      "0": 4,
+      "1": 3,
+      "2": 1
+    }
+  },
+  "FieldMedkit": {
+    "bytes": 90864,
+    "lod_meshes": {
+      "0": 4,
+      "1": 4,
+      "2": 2
+    }
+  },
+  "FieldRadio": {
+    "bytes": 161908,
+    "lod_meshes": {
+      "0": 4,
+      "1": 4,
+      "2": 4
+    }
+  },
+  "ForestMutant": {
+    "bytes": 366072,
+    "lod_meshes": {
+      "0": 3,
+      "1": 3,
+      "2": 3
+    }
+  },
+  "FuelCan": {
+    "bytes": 70620,
+    "lod_meshes": {
+      "0": 3,
+      "1": 2,
+      "2": 2
+    }
+  },
+  "OvergrownHouse": {
+    "bytes": 530716,
+    "lod_meshes": {
+      "0": 5,
+      "1": 5,
+      "2": 4
+    }
+  },
+  "PlayerHands": {
+    "bytes": 153812,
+    "lod_meshes": {
+      "0": 6,
+      "1": 4,
+      "2": 4
+    }
+  },
+  "PumpShotgun": {
+    "bytes": 176736,
+    "lod_meshes": {
+      "0": 4,
+      "1": 4,
+      "2": 3
+    }
+  },
+  "RailSignal": {
+    "bytes": 128220,
+    "lod_meshes": {
+      "0": 5,
+      "1": 5,
+      "2": 4
+    }
+  },
+  "RepairBench": {
+    "bytes": 256908,
+    "lod_meshes": {
+      "0": 4,
+      "1": 3,
+      "2": 3
+    }
+  },
+  "RepairKit": {
+    "bytes": 81472,
+    "lod_meshes": {
+      "0": 4,
+      "1": 4,
+      "2": 3
+    }
+  },
+  "ServicePistol": {
+    "bytes": 161848,
+    "lod_meshes": {
+      "0": 3,
+      "1": 3,
+      "2": 3
+    }
+  },
+  "StationHouse": {
+    "bytes": 471024,
+    "lod_meshes": {
+      "0": 5,
+      "1": 5,
+      "2": 5
+    }
+  },
+  "StationZombie": {
+    "bytes": 391900,
+    "lod_meshes": {
+      "0": 3,
+      "1": 3,
+      "2": 3
+    }
+  },
+  "SummerBirch": {
+    "bytes": 639668,
+    "lod_meshes": {
+      "0": 2,
+      "1": 2,
+      "2": 2
+    }
+  },
+  "SummerPine": {
+    "bytes": 1475116,
+    "lod_meshes": {
+      "0": 2,
+      "1": 2,
+      "2": 2
+    }
+  },
+  "SummerRailcar": {
+    "bytes": 768680,
+    "lod_meshes": {
+      "0": 6,
+      "1": 6,
+      "2": 4
+    }
+  },
+  "SupplyCrate": {
+    "bytes": 214848,
+    "lod_meshes": {
+      "0": 4,
+      "1": 4,
+      "2": 3
+    }
+  },
+  "SurvivalAxe": {
+    "bytes": 73384,
+    "lod_meshes": {
+      "0": 4,
+      "1": 4,
+      "2": 4
+    }
+  },
+  "WaterBottle": {
+    "bytes": 118692,
+    "lod_meshes": {
+      "0": 3,
+      "1": 3,
+      "2": 3
+    }
+  }
+}

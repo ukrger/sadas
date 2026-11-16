@@ -1,0 +1,6 @@
+shader_type sky;
+uniform float daylight:hint_range(0,1)=1.0;
+uniform vec3 sun_dir=vec3(0,1,0);
+float hash(vec3 p){p=fract(p*.1031);p+=dot(p,p.yzx+33.33);return fract((p.x+p.y)*p.z);}
+float noise2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.0-2.0*f);return mix(mix(hash(vec3(i,0)),hash(vec3(i+vec2(1,0),0)),f.x),mix(hash(vec3(i+vec2(0,1),0)),hash(vec3(i+vec2(1,1),0)),f.x),f.y);}
+void sky(){vec3 d=normalize(EYEDIR);float y=max(d.y,0.0);vec3 low=mix(vec3(.015,.024,.05),vec3(.62,.78,.91),daylight);vec3 high=mix(vec3(.002,.005,.02),vec3(.08,.30,.68),daylight);vec3 col=mix(low,high,pow(y,.45));float sundot=dot(d,sun_dir);col+=vec3(4.8,3.7,2.4)*smoothstep(.99994,.99998,sundot);col+=vec3(.24,.13,.04)*pow(max(sundot,0.0),160.0)*daylight;float moon=smoothstep(.9997,.99985,dot(d,-sun_dir))*(1.0-daylight);col+=vec3(.65,.75,.95)*moon;vec3 cell=floor(d*280.0);float stars=step(.994,hash(cell))*(1.0-smoothstep(.08,.17,length(fract(d*280.0)-vec3(hash(cell+3.0),hash(cell+11.0),hash(cell+23.0)))));col+=stars*(1.0-daylight)*smoothstep(.01,.2,d.y);float dusk=max(0.0,1.0-abs(sun_dir.y)*6.0);col+=vec3(.45,.14,.025)*dusk*pow(1.0-y,5.0);vec2 uv=d.xz/max(.18,d.y)*2.2;float n=noise2(uv)*.6+noise2(uv*2.1)*.3+noise2(uv*4.1)*.1;float clouds=smoothstep(.68,.80,n)*smoothstep(.05,.3,d.y)*.45;col=mix(col,mix(vec3(.035,.045,.07),vec3(.94,.93,.87),daylight),clouds);COLOR=col;}
