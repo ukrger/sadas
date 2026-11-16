@@ -1,25 +1,18 @@
 using UnityEngine;
 namespace TrainSummer {
-// Runtime state only. The UI representation is independent of these transactions.
 public sealed class ResourceInventory:MonoBehaviour {
- public int stackLimit=999;
- [SerializeField]int metalParts,cloth,medkits;
- [SerializeField]bool hasAxe;
- public int Medkits=>medkits;public bool HasAxe=>hasAxe;
- public bool TryTakeAxe(){if(hasAxe)return false;hasAxe=true;return true;}
- public bool TryAddMedkit(int amount=1){if(amount<=0 || amount>stackLimit-medkits)return false;medkits+=amount;return true;}
- public bool TryHeal(PlayerVitals vitals,float amount=35){
-  if(medkits<=0 || vitals==null || !vitals.Heal(amount))return false;
-  medkits--;return true;
- }
- public int MetalParts=>metalParts;public int Cloth=>cloth;
- public bool TryAdd(int parts,int fabric){
-  if(parts<0 || fabric<0 || parts>stackLimit-metalParts || fabric>stackLimit-cloth)return false;
-  metalParts+=parts;cloth+=fabric;return true;
- }
- public bool TrySpend(int parts,int fabric){
-  if(parts<0 || fabric<0 || metalParts<parts || cloth<fabric)return false;
-  metalParts-=parts;cloth-=fabric;return true;
- }
+ public int stackLimit=999;readonly InventoryModel model=new InventoryModel();
+ public int MetalParts=>model.MetalParts;public int Cloth=>model.Cloth;public int Medkits=>model.Medkits;public int Ammo=>model.Ammo;public int Magazine=>model.Magazine;
+ public bool HasAxe=>model.HasAxe;public bool HasPistol=>model.HasPistol;public WeaponSlot SelectedWeapon=>model.SelectedWeapon;
+ void Sync(){model.StackLimit=stackLimit;}
+ public bool TryAdd(int parts,int cloth){Sync();return model.TryAdd(parts,cloth);}
+ public bool TrySpend(int parts,int cloth)=>model.TrySpend(parts,cloth);
+ public bool TryAddMedkit(int amount=1){Sync();return model.TryAddMedkit(amount);}
+ public bool TryHeal(PlayerVitals vitals,float amount=35){if(model.Medkits<=0 || vitals==null || !vitals.Heal(amount))return false;return model.TrySpendMedkit();}
+ public bool TryTakeAxe()=>model.TryTakeAxe();public bool TryTakePistol()=>model.TryTakePistol();
+ public bool TryAddAmmo(int amount){Sync();return model.TryAddAmmo(amount);}
+ public bool TrySpendRound()=>model.TrySpendRound();public int Reload()=>model.Reload();public void Equip(WeaponSlot slot)=>model.Equip(slot);
+ public InventoryState Capture()=>model.Capture();public void Restore(InventoryState data){Sync();model.Restore(data);}
+ public bool IsValid(InventoryState data){Sync();return model.IsValid(data);}
 }
 }

@@ -39,6 +39,7 @@ public static class PrototypeBuilder {
   cam.gameObject.AddComponent<UniversalAdditionalCameraData>().renderPostProcessing=true;player.view=cam;
   var ui=playerObject.AddComponent<PrototypeUI>();ui.player=player;ui.train=train;ui.cab=cab;ui.inventory=inventory;
   ExpeditionSetup.ConfigurePlayer(train,player,inventory,ui,wood);
+  CombatSetup.Player(player,ui,inventory,metal);CombatSetup.Stations(player,wood);
   var world=new GameObject("Route Streamer").AddComponent<RouteChunks>();world.train=train;world.grass=grass;world.wood=wood;world.leaves=foliage;world.steel=metal;
   var sun=new GameObject("Sun").AddComponent<Light>();sun.type=LightType.Directional;sun.shadows=LightShadows.Soft;RenderSettings.sun=sun;
   var cycle=sun.gameObject.AddComponent<SummerLighting>();cycle.sun=sun;
@@ -48,6 +49,14 @@ public static class PrototypeBuilder {
   var profile=ScriptableObject.CreateInstance<VolumeProfile>();AssetDatabase.CreateAsset(profile,AssetDatabase.GenerateUniqueAssetPath(Root+"/SummerVolume.asset"));volume.sharedProfile=profile;
   var tone=profile.Add<Tonemapping>(true);tone.mode.Override(TonemappingMode.ACES);
   var bloom=profile.Add<Bloom>(true);bloom.intensity.Override(.15f);bloom.threshold.Override(1.1f);
+  foreach(var component in Object.FindObjectsOfType<MonoBehaviour>(true)){
+   if(!(component is IInteractable) && !(component is MutantAI))continue;
+   var entity=component.GetComponent<PersistentEntity>();if(entity==null)entity=component.gameObject.AddComponent<PersistentEntity>();
+   string path=component.transform.name;for(var parent=component.transform.parent;parent!=null;parent=parent.parent)path=parent.name+"/"+path;entity.id=path;
+  }
+  var systems=new GameObject("Game Systems");var settings=systems.AddComponent<SettingsService>();settings.player=player;settings.view=cam;
+  var saves=systems.AddComponent<SessionSave>();saves.player=player;saves.inventory=inventory;saves.train=train;saves.clock=cycle;
+  var menu=systems.AddComponent<GameMenu>();menu.settings=settings;menu.saves=saves;
   EditorSceneManager.SaveScene(scene,Root+(longRoute?"/Prototype_Long.unity":"/Prototype.unity"));AssetDatabase.SaveAssets();
   Selection.activeGameObject=playerObject;
   Debug.Log("Prototype ready. Press Play. Requires URP 14 and Input System with Active Input Handling set to Input System or Both.");

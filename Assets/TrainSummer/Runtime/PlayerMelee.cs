@@ -7,15 +7,14 @@ public sealed class PlayerMelee:MonoBehaviour {
  public FirstPersonMotor player;public PrototypeUI ui;public ResourceInventory inventory;public PlayerVitals vitals;public Transform weaponPivot;
  public float damage=25,reach=1.8f,swingDuration=.55f,cooldown=.7f;
  readonly List<MonoBehaviour> candidates=new List<MonoBehaviour>(8);
- bool equipped=true,swinging,hitResolved;float startedAt,nextSwing;
+ bool swinging,hitResolved;float startedAt,nextSwing;
  Vector3 idlePosition;Quaternion idleRotation;
  void Start(){if(weaponPivot!=null){idlePosition=weaponPivot.localPosition;idleRotation=weaponPivot.localRotation;}}
  void Update(){
   if(weaponPivot==null || inventory==null || player==null)return;
-  var k=Keyboard.current;var mouse=Mouse.current;
+  var mouse=Mouse.current;
   bool allowed=player.Locked && (ui==null || !ui.InventoryOpen) && (vitals==null || vitals.Alive);
-  if(allowed && k!=null && k.digit1Key.wasPressedThisFrame){equipped=!equipped;swinging=false;}
-  bool visible=equipped && inventory.HasAxe && (vitals==null || vitals.Alive);weaponPivot.gameObject.SetActive(visible);
+  bool visible=inventory.SelectedWeapon==WeaponSlot.Axe && inventory.HasAxe && (vitals==null || vitals.Alive);weaponPivot.gameObject.SetActive(visible);
   if(!visible || !allowed){swinging=false;ResetPose();return;}
   if(mouse!=null && mouse.leftButton.wasPressedThisFrame && !swinging && Time.time>=nextSwing){
    swinging=true;hitResolved=false;startedAt=Time.time;nextSwing=Time.time+Mathf.Max(cooldown,swingDuration);
@@ -28,6 +27,7 @@ public sealed class PlayerMelee:MonoBehaviour {
   if(!hitResolved && t>=.4f){hitResolved=true;ResolveHit();}
   if(t>=1){swinging=false;ResetPose();}
  }
+ public void Cancel(){swinging=false;hitResolved=true;}
  void ResetPose(){weaponPivot.localPosition=idlePosition;weaponPivot.localRotation=idleRotation;}
  void ResolveHit(){
   // First contact wins, so walls occlude damage. Player layer is excluded.

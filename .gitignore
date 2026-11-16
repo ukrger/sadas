@@ -6,3 +6,7 @@ UserSettings/
 Builds/
 *.csproj
 *.sln
+
+bin/
+obj/
+*.blend1

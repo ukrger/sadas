@@ -13,7 +13,8 @@ public sealed class TrainMotor:MonoBehaviour {
  public int StopIndex {get;private set;}
  public bool Finished=>route!=null && Distance>=route.Length-.01f;
  public float NextStopDistance=>route==null?0:(StopIndex<stops.Length?Mathf.Min(stops[StopIndex],route.Length):route.Length);
- bool brake;
+ bool brake;int restoreFrame=-1;public bool Brake=>brake;
+ public void Restore(SaveData data){Distance=data.distance;Fuel=data.fuel;StopIndex=data.stopIndex;Parked=data.parked;brake=data.brake;Speed=data.speed;PlayerAboard=data.aboard;restoreFrame=Time.frameCount;ApplyPose();}
  void Awake(){Fuel=Mathf.Max(0,startingFuel);}
  void Start(){if(route!=null)ApplyPose();}
  void OnValidate(){
@@ -27,7 +28,7 @@ public sealed class TrainMotor:MonoBehaviour {
   if(Parked)StopIndex++;Parked=false;brake=false;return true;
  }
  public void ToggleBrake(){if(Parked)Depart();else brake=!brake;}
- void Update(){Tick(Time.deltaTime);}
+ void Update(){if(Time.frameCount!=restoreFrame)Tick(Time.deltaTime);}
  public void Tick(float dt){
   if(route==null || dt<=0)return;
   // A breakdown or empty tank latches the brake; service must not restart an unattended train.

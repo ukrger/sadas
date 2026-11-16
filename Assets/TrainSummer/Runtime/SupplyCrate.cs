@@ -2,6 +2,7 @@ using UnityEngine;
 namespace TrainSummer {
 public sealed class SupplyCrate:MonoBehaviour,IInteractable {
  public int metalParts=4,cloth=2;public bool Looted {get;private set;}
+ public void RestoreLooted(bool value){Looted=value;}
  public string Prompt(bool english)=>Looted?(english?"Empty supply crate":"Пустой ящик"):(english?"E — search supply crate":"E — обыскать ящик");
  public string Interact(TrainMotor train,ResourceInventory inventory,bool english){
   if(Looted)return english?"The crate is empty.":"Ящик пуст.";

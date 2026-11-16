@@ -7,7 +7,8 @@ public sealed class FirstPersonMotor:MonoBehaviour {
  public PlayerVitals vitals;
  public Camera view; public TrainMotor train; public float walkSpeed=4,sensitivity=0.12f;
  CharacterController controller; Transform support; Vector3 supportPoint; Quaternion supportRotation;
- Vector3 inheritedVelocity; float pitch,vertical;
+ Vector3 inheritedVelocity; float pitch,vertical,nextFootstep;
+ public float LookPitch=>pitch;
  public bool Locked=>Cursor.lockState==CursorLockMode.Locked;
  void Awake(){controller=GetComponent<CharacterController>();Lock(true);}
  void OnDisable(){Cursor.lockState=CursorLockMode.None;Cursor.visible=true;}
@@ -15,7 +16,6 @@ public sealed class FirstPersonMotor:MonoBehaviour {
  void Update(){
   var k=Keyboard.current;var m=Mouse.current;if(k==null||m==null)return;
   float dt=Time.deltaTime;if(dt<=0)return;
-  if(k.escapeKey.wasPressedThisFrame)Lock(!Locked);
   if(vitals!=null && !vitals.Alive){train.PlayerAboard=false;if(k.rKey.wasPressedThisFrame){Respawn();vitals.ResetAfterRespawn();}return;}
   // Train and pooled world transforms move before this controller.
   Physics.SyncTransforms();
@@ -55,8 +55,10 @@ public sealed class FirstPersonMotor:MonoBehaviour {
   else if(hadSupport && !jump)inheritedVelocity=Vector3.ProjectOnPlane(platformVelocity,Vector3.up);
   Vector3 local=train.transform.InverseTransformPoint(transform.position);
   train.PlayerAboard=support!=null || (Mathf.Abs(local.x)<1.5f && Mathf.Abs(local.z)<6 && local.y>1 && local.y<4);
+  if(controller.isGrounded && move.sqrMagnitude>.2f && Time.time>=nextFootstep){NoiseBus.Emit(transform.position,6);nextFootstep=Time.time+.5f;}
   if(transform.position.y< -15)Respawn();
  }
+ public void RestorePose(Vector3 position,Quaternion rotation,float lookPitch=0){controller.enabled=false;transform.SetPositionAndRotation(position,rotation);controller.enabled=true;vertical=0;support=null;inheritedVelocity=Vector3.zero;pitch=Mathf.Clamp(lookPitch,-80,80);view.transform.localRotation=Quaternion.Euler(pitch,0,0);}
  void Respawn(){controller.enabled=false;transform.position=train.transform.TransformPoint(new Vector3(0,1.4f,-2));transform.rotation=train.transform.rotation;controller.enabled=true;vertical=0;inheritedVelocity=Vector3.zero;support=null;}
 }
 }

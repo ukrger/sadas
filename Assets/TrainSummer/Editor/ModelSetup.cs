@@ -14,7 +14,8 @@ public static class ModelSetup {
    visual.transform.localRotation=Quaternion.Inverse(Quaternion.LookRotation(f,u))*visual.transform.localRotation;
    if(unit>.0001f)visual.transform.localScale/=unit;
   }
-  foreach(var renderer in visual.GetComponentsInChildren<MeshRenderer>(true)){
+  foreach(var renderer in visual.GetComponentsInChildren<Renderer>(true)){
+   if(!(renderer is MeshRenderer) && !(renderer is SkinnedMeshRenderer))continue;
    renderer.enabled=true;var materials=renderer.sharedMaterials;
    string key=renderer.name.Substring(renderer.name.IndexOf('_')+1);
    for(int i=0;i<materials.Length;i++)materials[i]=MaterialFor(key);
@@ -22,9 +23,12 @@ public static class ModelSetup {
   }
   var group=visual.AddComponent<LODGroup>();var lods=new LOD[3];float[] heights={.20f,.075f,.015f};
   for(int i=0;i<3;i++){
-   var lod=Find(visual.transform,"LOD"+i);
-   if(lod==null){Debug.LogError("Missing LOD"+i+" in "+path);return visual;}
-   lod.gameObject.SetActive(true);lods[i]=new LOD(heights[i],lod.GetComponentsInChildren<Renderer>(true));
+   var lod=Find(visual.transform,"LOD"+i);if(lod!=null)lod.gameObject.SetActive(true);
+   // FBX reparents skinned meshes to the skeleton; LOD membership is identified by name.
+   var renderers=new System.Collections.Generic.List<Renderer>();
+   foreach(var renderer in visual.GetComponentsInChildren<Renderer>(true))if(renderer.name.StartsWith("LOD"+i+"_"))renderers.Add(renderer);
+   if(renderers.Count==0){Debug.LogError("Missing LOD"+i+" renderers in "+path);return visual;}
+   lods[i]=new LOD(heights[i],renderers.ToArray());
   }
   group.SetLODs(lods);group.RecalculateBounds();return visual;
  }
@@ -34,6 +38,14 @@ public static class ModelSetup {
   if(material==null){material=new Material(Shader.Find("Universal Render Pipeline/Lit"));AssetDatabase.CreateAsset(material,path);}
   Color color=new Color(.14f,.22f,.18f);float metallic=.5f;
   switch(key){
+   case "GunSteel":color=new Color(.12f,.14f,.15f);metallic=.8f;break;
+   case "GunGrip":color=new Color(.12f,.095f,.065f);metallic=0;break;
+   case "AmmoCard":color=new Color(.39f,.29f,.15f);metallic=0;break;
+   case "AmmoBrass":color=new Color(.55f,.39f,.12f);metallic=.8f;break;
+   case "AmmoLead":color=new Color(.25f,.22f,.18f);metallic=.6f;break;
+   case "MutantSkin":color=new Color(.30f,.34f,.22f);metallic=0;break;
+   case "MutantCloth":color=new Color(.18f,.20f,.14f);metallic=0;break;
+   case "MutantDark":color=new Color(.07f,.08f,.045f);metallic=0;break;
    case "GearCanvas":color=new Color(.20f,.25f,.12f);metallic=0;break;
    case "GearStrap":color=new Color(.10f,.12f,.075f);metallic=0;break;
    case "GearSteel":color=new Color(.22f,.23f,.20f);metallic=.7f;break;

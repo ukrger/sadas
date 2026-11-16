@@ -31,20 +31,20 @@ class PropBuilder:
   if axis=='x':o.rotation_euler[1]=math.pi/2
   if axis=='z':o.rotation_euler[0]=math.pi/2
   o.data.materials.append(self.mats[mi]);self.parts.append(o);return o
- def export(self):
+ def export(self,animated=False):
   for name,p in [('AxisRight',(1,0,0)),('AxisUp',(0,1,0)),('AxisForward',(0,0,1))]:
    o=bpy.data.objects.new(name,None);bpy.context.collection.objects.link(o);o.parent=self.root;o.location=(p[0],-p[2],p[1])
   out=self.project/'Assets/Models';out.mkdir(parents=True,exist_ok=True)
-  bpy.ops.object.select_all(action='SELECT');bpy.ops.export_scene.fbx(filepath=str(out/(self.name+'.fbx')),use_selection=True,axis_forward='-Z',axis_up='Y',bake_anim=False)
+  bpy.ops.object.select_all(action='SELECT');bpy.ops.export_scene.fbx(filepath=str(out/(self.name+'.fbx')),use_selection=True,axis_forward='-Z',axis_up='Y',bake_anim=animated,add_leaf_bones=False)
   for o in bpy.context.scene.objects:
    if o.type=='MESH':hidden=o.parent.name!='LOD0';o.hide_render=hidden;o.hide_set(hidden)
   source=self.project/'Tools/Blender/Source';source.mkdir(parents=True,exist_ok=True);bpy.ops.wm.save_as_mainfile(filepath=str(source/(self.name+'.blend')))
   (out/(self.name+'_stats.json')).write_text(json.dumps(self.stats,indent=2));print('MODEL_STATS',self.name,self.stats)
- def render(self,target,ortho):
+ def render(self,target,ortho,camera=(3,4,2.8)):
   def aim(o,p):o.rotation_euler=(Vector(p)-o.location).to_track_quat('-Z','Y').to_euler()
   bpy.ops.mesh.primitive_plane_add(size=100);m=bpy.data.materials.new('Studio');m.diffuse_color=(.13,.15,.13,1);bpy.context.object.data.materials.append(m)
   for loc,power,size in [((3,4,6),450,5),((-3,-2,4),350,4)]:
    bpy.ops.object.light_add(type='AREA',location=loc);o=bpy.context.object;o.data.energy=power;o.data.size=size;aim(o,(0,0,target))
-  bpy.ops.object.camera_add(location=(3,4,2.8));cam=bpy.context.object;aim(cam,(0,0,target));cam.data.type='ORTHO';cam.data.ortho_scale=ortho
+  bpy.ops.object.camera_add(location=camera);cam=bpy.context.object;aim(cam,(0,0,target));cam.data.type='ORTHO';cam.data.ortho_scale=ortho
   s=bpy.context.scene;s.camera=cam;s.world.color=(.3,.3,.3);s.render.engine='CYCLES';s.cycles.samples=24;s.cycles.use_denoising=False;s.render.resolution_x=1300;s.render.resolution_y=1000;s.render.resolution_percentage=100
   out=self.project/'Previews';out.mkdir(exist_ok=True);s.render.filepath=str(out/(self.name+'.png'));bpy.ops.render.render(write_still=True)

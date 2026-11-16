@@ -6,15 +6,17 @@ namespace TrainSummer {
 public sealed class PrototypeUI:MonoBehaviour {
  public PlayerVitals vitals;
  public bool InventoryOpen=>inventoryOpen;
- public void OpenInventory(){inventoryOpen=true;}
+ public void OpenInventory(){inventoryOpen=true;}public void CloseInventory(){inventoryOpen=false;}
  public FirstPersonMotor player;public TrainMotor train;public Transform cab;public ResourceInventory inventory;
  readonly List<MonoBehaviour> candidates=new List<MonoBehaviour>(8);
- IInteractable target;bool english,showFps=true,inventoryOpen,showHelp;float smooth,statusUntil;string status="";
+ IInteractable target;bool inventoryOpen,showHelp;
+ bool english=>Localizer.English;bool showFps=>SettingsService.Current.showFps;float smooth,statusUntil;string status="";
  string T(string ru,string en)=>english?en:ru;
  void Update(){
+  if(GameMenu.Paused)return;
   smooth=Mathf.Lerp(smooth,Time.unscaledDeltaTime,.08f);var k=Keyboard.current;if(k==null)return;
-  if(k.f1Key.wasPressedThisFrame)english=!english;
-  if(k.f2Key.wasPressedThisFrame)showFps=!showFps;
+  if(k.f1Key.wasPressedThisFrame){SettingsService.Current.english=!english;Localizer.SetLanguage(SettingsService.Current.english);}
+  if(k.f2Key.wasPressedThisFrame)SettingsService.Current.showFps=!showFps;
   if(k.f3Key.wasPressedThisFrame)showHelp=!showHelp;
   if(k.tabKey.wasPressedThisFrame)inventoryOpen=!inventoryOpen;
   target=null;if(!player.Locked || inventoryOpen || (vitals!=null && !vitals.Alive))return;
@@ -29,11 +31,13 @@ public sealed class PrototypeUI:MonoBehaviour {
   }
  }
  void OnGUI(){
-  GUI.Box(new Rect(16,16,310,138),T("ЛЕТНИЙ МАРШРУТ","SUMMER ROUTE"));
+  if(GameMenu.Paused)return;
+  GUI.Box(new Rect(16,16,310,164),T("ЛЕТНИЙ МАРШРУТ","SUMMER ROUTE"));
   GUI.Label(new Rect(28,43,290,25),T("Скорость / топливо: ","Speed / fuel: ")+$"{train.Speed:0.0} m/s / {train.Fuel:0.0}");
   GUI.Label(new Rect(28,68,290,25),T("До остановки: ","Next stop: ")+Mathf.Max(0,train.NextStopDistance-train.Distance).ToString("0")+" m");
   if(train.maintenance!=null)GUI.Label(new Rect(28,93,290,25),T("Состояние поезда: ","Train condition: ")+train.maintenance.Condition.ToString("0")+"%");
   if(vitals!=null)GUI.Label(new Rect(28,118,290,25),T("Здоровье: ","Health: ")+vitals.Health.ToString("0"));
+  if(inventory.HasPistol)GUI.Label(new Rect(28,143,290,25),T("Патроны: ","Ammo: ")+inventory.Magazine+" / "+inventory.Ammo);
   if(showFps)GUI.Label(new Rect(Screen.width-100,16,100,25),$"{1f/Mathf.Max(smooth,.001f):0} FPS");
   if(!inventoryOpen && player.Locked)GUI.Label(new Rect(Screen.width/2-5,Screen.height/2-12,30,30),"+");
   string prompt="";
@@ -62,8 +66,8 @@ public sealed class PrototypeUI:MonoBehaviour {
    GUI.Label(new Rect(x+20,y+265,400,25),T("Мир продолжает двигаться.","The world keeps running."));
   }
   if(showHelp){
-   GUI.Box(new Rect(16,165,470,205),T("УПРАВЛЕНИЕ","CONTROLS"));
-   GUI.Label(new Rect(28,195,445,170),T("WASD — ходьба, мышь — обзор, Space — прыжок\nE — взаимодействие, Esc — курсор\nTab — ресурсы, F1 — RU/EN, F2 — FPS\nЛКМ — топор, 1 — экипировка, H — лечение\nРемонт доступен при остановленном поезде.\nЯщики можно обыскать один раз за сессию.","WASD move, mouse look, Space jump\nE interact, Esc cursor\nTab resources, F1 RU/EN, F2 FPS\nLMB axe, 1 equip, H heal\nStop the train to repair it.\nCrates can be looted once per session."));
+   GUI.Box(new Rect(16,195,500,230),T("УПРАВЛЕНИЕ","CONTROLS"));
+   GUI.Label(new Rect(28,225,475,200),T("WASD — ходьба, мышь — обзор, Space — прыжок\nE — взаимодействие, Esc — курсор\nTab — ресурсы, F1 — RU/EN, F2 — FPS\nЛКМ — атака, 1/2 — оружие, H — лечение\nR — перезарядка, F — фонарик, F5/F9 — сохранить/загрузить\nРемонт доступен при остановленном поезде.\nЯщики можно обыскать один раз за сессию.","WASD move, mouse look, Space jump\nE interact, Esc cursor\nTab resources, F1 RU/EN, F2 FPS\nLMB attack, 1/2 weapons, H heal\nR reload, F flashlight, F5/F9 save/load\nStop the train to repair it.\nCrates can be looted once per session."));
   }
  }
 }

@@ -1,0 +1,136 @@
+{
+  "entries": [
+    {
+      "key": "title",
+      "value": "PAUSE AND SETTINGS"
+    },
+    {
+      "key": "resume",
+      "value": "Resume"
+    },
+    {
+      "key": "save",
+      "value": "Save"
+    },
+    {
+      "key": "load",
+      "value": "Load"
+    },
+    {
+      "key": "autoLoad",
+      "value": "Autosave"
+    },
+    {
+      "key": "newGame",
+      "value": "Restart route"
+    },
+    {
+      "key": "language",
+      "value": "Language"
+    },
+    {
+      "key": "preset",
+      "value": "Quality"
+    },
+    {
+      "key": "low",
+      "value": "Low"
+    },
+    {
+      "key": "medium",
+      "value": "Medium"
+    },
+    {
+      "key": "high",
+      "value": "High"
+    },
+    {
+      "key": "textures",
+      "value": "Texture quality"
+    },
+    {
+      "key": "shadows",
+      "value": "Shadow resolution"
+    },
+    {
+      "key": "shadowDistance",
+      "value": "Shadow distance"
+    },
+    {
+      "key": "drawDistance",
+      "value": "Draw distance"
+    },
+    {
+      "key": "renderScale",
+      "value": "Render scale"
+    },
+    {
+      "key": "aa",
+      "value": "Anti-aliasing"
+    },
+    {
+      "key": "off",
+      "value": "Off"
+    },
+    {
+      "key": "post",
+      "value": "Post-processing"
+    },
+    {
+      "key": "fps",
+      "value": "Show FPS"
+    },
+    {
+      "key": "fpsLimit",
+      "value": "Frame rate limit"
+    },
+    {
+      "key": "unlimited",
+      "value": "Unlimited"
+    },
+    {
+      "key": "vsyncNote",
+      "value": "With V-Sync enabled, synchronization determines the frame rate."
+    },
+    {
+      "key": "sensitivity",
+      "value": "Mouse sensitivity"
+    },
+    {
+      "key": "screen",
+      "value": "Screen mode"
+    },
+    {
+      "key": "windowed",
+      "value": "Windowed"
+    },
+    {
+      "key": "borderless",
+      "value": "Borderless"
+    },
+    {
+      "key": "exclusive",
+      "value": "Exclusive fullscreen"
+    },
+    {
+      "key": "resolution",
+      "value": "Resolution"
+    },
+    {
+      "key": "apply",
+      "value": "Apply and save settings"
+    },
+    {
+      "key": "settingsSaved",
+      "value": "Settings saved."
+    },
+    {
+      "key": "keys",
+      "value": "Esc pause; F5 save; F9 load; F flashlight; 1/2 weapons; R reload."
+    },
+    {
+      "key": "full",
+      "value": "Full"
+    }
+  ]
+}

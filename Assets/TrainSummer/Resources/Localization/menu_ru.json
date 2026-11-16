@@ -1,0 +1,136 @@
+{
+  "entries": [
+    {
+      "key": "title",
+      "value": "ПАУЗА И НАСТРОЙКИ"
+    },
+    {
+      "key": "resume",
+      "value": "Продолжить"
+    },
+    {
+      "key": "save",
+      "value": "Сохранить"
+    },
+    {
+      "key": "load",
+      "value": "Загрузить"
+    },
+    {
+      "key": "autoLoad",
+      "value": "Автосохранение"
+    },
+    {
+      "key": "newGame",
+      "value": "Начать маршрут заново"
+    },
+    {
+      "key": "language",
+      "value": "Язык"
+    },
+    {
+      "key": "preset",
+      "value": "Качество"
+    },
+    {
+      "key": "low",
+      "value": "Низкое"
+    },
+    {
+      "key": "medium",
+      "value": "Среднее"
+    },
+    {
+      "key": "high",
+      "value": "Высокое"
+    },
+    {
+      "key": "textures",
+      "value": "Качество текстур"
+    },
+    {
+      "key": "shadows",
+      "value": "Разрешение теней"
+    },
+    {
+      "key": "shadowDistance",
+      "value": "Дальность теней"
+    },
+    {
+      "key": "drawDistance",
+      "value": "Дальность прорисовки"
+    },
+    {
+      "key": "renderScale",
+      "value": "Масштаб рендера"
+    },
+    {
+      "key": "aa",
+      "value": "Сглаживание"
+    },
+    {
+      "key": "off",
+      "value": "Выключено"
+    },
+    {
+      "key": "post",
+      "value": "Постобработка"
+    },
+    {
+      "key": "fps",
+      "value": "Показывать FPS"
+    },
+    {
+      "key": "fpsLimit",
+      "value": "Ограничение FPS"
+    },
+    {
+      "key": "unlimited",
+      "value": "Без ограничения"
+    },
+    {
+      "key": "vsyncNote",
+      "value": "При включённом V-Sync частоту кадров задаёт синхронизация."
+    },
+    {
+      "key": "sensitivity",
+      "value": "Чувствительность мыши"
+    },
+    {
+      "key": "screen",
+      "value": "Режим экрана"
+    },
+    {
+      "key": "windowed",
+      "value": "Оконный"
+    },
+    {
+      "key": "borderless",
+      "value": "Без рамок"
+    },
+    {
+      "key": "exclusive",
+      "value": "Полноэкранный"
+    },
+    {
+      "key": "resolution",
+      "value": "Разрешение"
+    },
+    {
+      "key": "apply",
+      "value": "Применить и сохранить настройки"
+    },
+    {
+      "key": "settingsSaved",
+      "value": "Настройки сохранены."
+    },
+    {
+      "key": "keys",
+      "value": "Esc — пауза; F5 — сохранение; F9 — загрузка; F — фонарик; 1/2 — оружие; R — перезарядка."
+    },
+    {
+      "key": "full",
+      "value": "Полное"
+    }
+  ]
+}
